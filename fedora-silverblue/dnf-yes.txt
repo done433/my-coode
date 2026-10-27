@@ -1,0 +1,7 @@
+#to chaunch the  deffault to  yes
+
+sudo nano /etc/dnf/dnf.conf
+[main]
+defaultyes=True
+
+

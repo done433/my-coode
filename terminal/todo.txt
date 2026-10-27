@@ -1,0 +1,9 @@
+
+
+zle -l 
+bindkey 
+
+
+type -f <ls>
+
+functions <ls>

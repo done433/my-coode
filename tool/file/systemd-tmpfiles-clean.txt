@@ -1,0 +1,26 @@
+sudo nano  /etc/tmpfiles.d/my-rules.conf 
+
+d /home/qwe/Documents/xx 0755 qwe qwe 12h
+d /home/qwe/Downloads  0755  qwe qwe 12h
+
+
+
+sudo systemctl edit systemd-tmpfiles-clean.timer
+
+
+[Timer]
+OnUnitActiveSec=1h
+
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-tmpfiles-clean.timer
+
+
+
+systemctl cat systemd-tmpfiles-clean.timer
+
+
+#to run 
+sudo systemd-tmpfiles --clean
+

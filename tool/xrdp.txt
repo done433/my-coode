@@ -1,0 +1,19 @@
+
+
+#=== עדכון חבילות ===
+sudo apt update && sudo apt upgrade -y
+
+#=== התקנת סביבת דסקטופ קלה + שרת RDP ===
+#ubuntu-desktop כבד — xfce4 מהיר יותר
+sudo apt install -y xfce4 xfce4-goodies xrdp
+
+#=== הגדרת סיסמה למשתמש ubuntu ===
+#xrdp דורש סיסמה להתחברות
+sudo passwd ubuntu
+
+#=== הפעלת xrdp ===
+sudo systemctl enable xrdp
+sudo systemctl start xrdp
+
+#=== בדיקת סטטוס ===
+sudo systemctl status xrdp

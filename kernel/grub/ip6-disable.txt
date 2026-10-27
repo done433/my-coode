@@ -1,0 +1,15 @@
+
+sudo nano /etc/default/grub
+
+GRUB_CMDLINE_LINUX_DEFAULT="....... ipv6.disable=1 "
+
+
+
+sudo update-grub
+
+sudo reboot
+
+
+#לראות איזה הגדרות באמת  ב grub
+cat /proc/cmdline
+

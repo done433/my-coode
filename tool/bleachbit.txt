@@ -1,0 +1,46 @@
+sudo apt update
+sudo apt install bleachbit -y
+
+#BleachBit עובד לפי cleaners שנמצאים כאן
+/usr/share/bleachbit/cleaners/
+~/.config/bleachbit/cleaners/
+
+
+#בלי סיכון ל־home בכלל
+sudo bleachbit --clean system.tmp system.cache
+
+#מצב CLI בטוח
+sudo bleachbit --clean system.tmp system.cache apt.autoclean apt.autoremove
+
+#אפשר גם להכריח מניעת home ברמת מערכת:
+sudo bleachbit --clean system.tmp system.cache --no-users
+
+#ניקוי עמוק בטוח 
+sudo bleachbit --clean system.tmp system.cache apt.autoclean apt.autoremove
+
+
+
+
+
+
+
+##########################################
+
+
+flatpak install flathub com.github.qarmin.czkawka
+sudo snap install czkawka
+
+
+
+apt install fdupes rdfind
+
+
+
+sudo apt install smartmontools
+smartmontools
+sudo smartctl -a /dev/sda
+
+sudo apt update
+sudo apt install gsmartcontrol
+
+

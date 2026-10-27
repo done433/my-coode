@@ -1,0 +1,40 @@
+awk -F',' 'NR==1{
+  for(i=1;i<=NF;i++) h[i]=$i
+} NR>1{
+  printf "{"
+  for(i=1;i<=NF;i++){
+    v=$i
+    gsub(/"/,"\\\"",v)
+    gsub(/[\x00-\x1F]/,"",v)
+    printf "\"%s\":\"%s\"%s", h[i], v, (i<NF?",":"")
+  }
+  print "}"
+}' WigleWifi.csv | jq -s '.' > newfile.js
+
+
+
+
+
+
+
+
+awk -F',' 'BEGIN {
+    printf "MAC: %-20s SSID: %-25s AuthMode: %-10s FirstSeen: %-20s Channel: %-10s Frequency: %-10s RSSI: %-6s Latitude: %-15s Longitude: %-15s Altitude: %-15s Accuracy: %-10s RCOIs: %-7s MfgrId: %-8s Type: %-5s\n", 
+    "MAC", "SSID", "AuthMode", "FirstSeen", "Channel", "Frequency", "RSSI", "Latitude", "Longitude", "Altitude", "Accuracy", "RCOIs", "MfgrId", "Type"
+}
+NR>1 {
+    printf "MAC: %-20s SSID: %-25s AuthMode: %-10s FirstSeen: %-20s Channel: %-10s Frequency: %-10s RSSI: %-6s Latitude: %-15s Longitude: %-15s Altitude: %-15s Accuracy: %-10s RCOIs: %-7s MfgrId: %-8s Type: %-5s\n",
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+}' file.txt
+
+
+
+
+
+awk -F',' 'NR > 1 {print "MAC: " $1 " SSID: " $2 " AuthMode: " $3 " FirstSeen: " $4 " Channel: " $5 " Frequency: " $6 " RSSI: " $7 " Latitude: " $8 " Longitude: " $9 " Altitude: " $10 " Accuracy: " $11 " RCOIs: " $12 " MfgrId: " $13 " Type: " $14 }' file.txt
+
+
+
+
+
+mlr --icsv --ojson --jvstack cat input.csv > output.json

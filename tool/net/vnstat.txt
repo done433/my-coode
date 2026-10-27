@@ -1,0 +1,56 @@
+
+sudo apt install vnstat
+
+
+
+
+
+
+
+sudo nano /etc/vnstat.conf
+
+
+Interface"<to follow>>
+
+
+
+
+
+
+sudo systemctl restart vnstat
+
+
+sudo vnstat
+
+
+
+
+#הצגת שימוש ברשת (מצטבר)
+
+vnstat
+
+#הצגת שימוש לפי ימים
+
+vnstat -d
+
+#הצגת שימוש לפי חודשים
+
+vnstat -m
+
+#הצגת שימוש לפי שנים
+
+vnstat -y
+
+#הצגת נתונים עבור ממשק רשת מסוים
+
+vnstat -i <interfice>
+
+#צפייה בזמן אמת עבור ממשק רשת מסוים
+
+vnstat --live -i <interfice>
+
+vnstat --live --iface <interfice>
+
+#הצגת נתוני שימוש עבור כל ממשקי הרשת
+
+vnstat --iflist | sed 's/Available interfaces: //' | tr ' ' '\n' | while read i; do echo "=== $i ==="; vnstat -i "$i"; done

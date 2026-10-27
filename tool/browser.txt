@@ -1,0 +1,190 @@
+# Download the Mullvad signing key
+sudo curl -fsSLo /usr/share/keyrings/mullvad-keyring.asc https://repository.mullvad.net/deb/mullvad-keyring.asc
+
+# Add the Mullvad repository server to apt
+echo "deb [signed-by=/usr/share/keyrings/mullvad-keyring.asc arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable stable main" | sudo tee /etc/apt/sources.list.d/mullvad.list
+
+# Install the package
+sudo apt update
+sudo apt install mullvad-browser
+# And to install the alpha version
+sudo apt install mullvad-browser-alpha
+
+
+
+
+
+## to key short chommand
+/usr/lib/mullvad-browser/start-mullvad-browser https://gemini.google.com/
+
+
+
+
+
+
+
+nano /usr/share/applications/mullvad-browser.desktop
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mullvad Browser
+GenericName=Web Browser
+Comment=Mullvad Browser is a privacy-focused web browser designed to minimize tracking and fingerprinting.
+Categories=Network;WebBrowser;
+Exec=/usr/lib/mullvad-browser/start-mullvad-browser %u
+Icon=mullvad-browser
+StartupNotify=true
+StartupWMClass=Mullvad Browser
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+Terminal=false
+
+
+
+
+
+
+
+
+
+
+
+
+xdg-settings set default-web-browser mullvad-browser.desktop
+
+xdg-mime default mullvad-browser.desktop x-scheme-handler/http x-scheme-handler/https text/html
+
+
+
+
+##############################################################################################################################
+
+## librewolf
+
+
+
+sudo apt update && sudo apt install extrepo -y
+
+sudo extrepo enable librewolf && sudo extrepo update librewolf
+
+sudo apt update && sudo apt install librewolf -y
+
+
+
+
+# remove librewolf
+
+
+sudo extrepo disable librewolf
+
+
+
+
+sudo rm -f \
+    /etc/apt/sources.list.d/librewolf.sources \
+    /etc/apt/keyrings/librewolf.gpg \
+    /etc/apt/preferences.d/librewolf.pref \
+    /etc/apt/sources.list.d/home_bgstack15_aftermozilla.sources \
+    /etc/apt/keyrings/home_bgstack15_aftermozilla.gpg \
+    /etc/apt/sources.list.d/librewolf.list \
+    /etc/apt/trusted.gpg.d/librewolf.gpg \
+    /etc/apt/sources.list.d/home:bgstack15:aftermozilla.list \
+    /etc/apt/trusted.gpg.d/home_bgstack15_aftermozilla.gpg
+
+
+
+
+
+
+
+
+
+
+
+#############################################################################
+
+#brave
+
+
+flatpak install  com.brave.Browser 
+
+
+
+
+
+
+
+
+mkdir -p ~/.local/share/applications
+cp /var/lib/flatpak/exports/share/applications/com.brave.Browser.desktop ~/.local/share/applications/
+
+
+nano ~/.local/share/applications/com.brave.Browser.desktop
+
+com.brave.Browser --incognito
+
+
+
+mkdir -p ~/.local/share/applications && \
+cp /var/lib/flatpak/exports/share/applications/com.brave.Browser.desktop ~/.local/share/applications/ && \
+sed -i 's/com.brave.Browser$/com.brave.Browser --incognito/' ~/.local/share/applications/com.brave.Browser.desktop
+
+
+
+
+sed -i 's/com.brave.Browser @@u/com.brave.Browser --incognito @@u/' ~/.local/share/applications/com.brave.Browser.desktop
+
+
+
+sed -i 's/^Icon=com.brave.Browser --incognito$/Icon=com.brave.Browser/' ~/.local/share/applications/com.brave.Browser.desktop
+
+
+
+update-desktop-database ~/.local/share/applications 2>/dev/null
+
+grep Exec ~/.local/share/applications/com.brave.Browser.desktop
+
+
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=brave com.brave.Browser --incognito
+
+
+
+
+
+
+
+
+##################################################################################################
+
+
+#google chrome
+
+sudo apt update
+sudo apt install curl wget gpg -y
+
+
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/google.gpg
+
+
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+
+
+sudo apt update
+sudo apt install google-chrome-stable -y
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

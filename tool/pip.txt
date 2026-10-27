@@ -1,0 +1,38 @@
+# עדכון מערכת
+sudo apt update
+
+# התקנת Python וכל מה שצריך לעבודה מלאה
+sudo apt install -y python3 python3-venv python3-pip python3-dev build-essential
+
+# יצירת תיקייה לסביבות
+mkdir -p ~/.env
+
+# יצירת סביבה מבודדת
+python3 -m venv ~/.env/.env
+
+# כניסה לסביבה
+source ~/.env/.env/bin/activate
+
+# בדיקה שאנחנו בתוך הסביבה
+which python
+python --version
+
+# שדרוג מנהל החבילות בתוך הסביבה
+pip install --upgrade pip setuptools wheel
+
+# דוגמה: התקנת ספריות
+pip install requests river
+
+# בדיקה שהכול עובד
+
+
+
+
+
+
+#in dersctory
+
+source .venv/bin/activate
+deactivate
+
+export PATH="~/.env/.env/bin:$PATH"

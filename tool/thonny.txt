@@ -1,0 +1,35 @@
+#IDE for python to ESP
+
+
+#flatpak install flathub org.thonny.Thonny 
+#sudo apt install python3-tk thonny
+
+
+#bether install this
+pipx install thonny
+
+#to open
+thonny
+
+
+
+
+#בשביל  שיהיה  אייקון  בתוך  הרשימה  הויזואלית  של לינוקס  מינט קינמון
+nano ~/.local/share/applications/thonny.desktop
+
+
+
+[Desktop Entry]
+Type=Application
+Name=Thonny Python IDE
+Comment=Python IDE for beginners and pros
+Exec=/home/qwe/.local/bin/thonny
+Icon=applications-development
+Categories=Development;IDE;Education;
+Terminal=false
+
+
+
+
+chmod +x ~/.local/share/applications/thonny.desktop
+

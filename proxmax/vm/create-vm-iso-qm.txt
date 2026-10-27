@@ -1,0 +1,202 @@
+#list vm
+qm list
+
+# 1. יצירת VM
+qm create 100 --name debian13 --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+
+# 2. ייבוא דיסק ה-QCOW2
+qm importdisk 100 /var/lib/vz/template/iso/debian-13-generic-amd64.qcow2 local
+
+# 3. חיבור הדיסק ל-VM
+qm set 100 --scsihw virtio-scsi-pci --scsi0 local:100/vm-100-disk-0.raw
+
+# 4. הגדרת הדיסק כדיסק אתחול
+qm set 100 --boot order=scsi0
+
+# 5. הוספת Cloud-Init
+qm set 100 --ide2 local:cloudinit
+
+# 6. יצירת משתמש
+qm set 100 --ciuser debian
+
+# 7. הגדרת סיסמה
+# החלף את YourStrongPassword123! בסיסמה שלך
+qm set 100 --cipassword 
+
+# 8. הוספת Serial Console
+qm set 100 --serial0 socket
+
+# 9. בדיקת ההגדרות
+qm config 100
+
+# 10. הפעלת ה-VM
+qm start 100
+
+# 11. התחברות ל-Console
+qm terminal 100
+
+
+#get aut  of vm terminal
+ctrl + O
+
+
+########################
+
+
+#check interfice
+ip a
+
+sudo nano /etc/systemd/network/10-<interfice...>.network
+
+
+[Match]
+Name=<interfice...>
+
+[Network]
+DHCP=yes
+
+
+
+sudo systemctl restart systemd-networkd
+
+sudo systemctl enable systemd-networkd
+
+
+
+
+#########################################################
+
+INTERFACE=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
+sudo bash -c "cat > /etc/systemd/network/10-$INTERFACE.network" <<EOF
+[Match]
+Name=$INTERFACE
+[Network]
+DHCP=yes
+EOF
+sudo systemctl restart systemd-networkd
+sudo systemctl enable systemd-networkd
+
+#########################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#in vm to get  net
+
+sudo ip link set ens18 up
+sudo dhcpcd ens18
+
+
+#in vm to get  net
+
+IFACE=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}'); sudo ip link set "$IFACE" up; sudo dhcpcd "$IFACE"; ip -4 addr show "$IFACE"; ip route
+
+#########
+
+sudo nmcli connection modify "ens18-net" ipv4.addresses "10.10.10.50/24" ipv4.gateway "10.10.10.1" ipv4.method manual
+sudo nmcli connection modify "ens18-net" ipv4.dns "8.8.8.8"
+sudo nmcli connection up "ens18-net"
+
+
+
+
+########################
+#add disk spice
+qm resize 100 scsi0 +12G
+
+##
+sudo apt update && sudo apt install cloud-guest-utils -y
+sudo growpart /dev/sda 1
+sudo resize2fs /dev/sda1
+df -h /
+
+##
+
+
+###############################
+
+#create template
+
+sudo rm -f ~/.bash_history ~/.zsh_history
+history -c
+sudo journalctl --vacuum-time=1s
+sudo apt clean &&  brew cleanup
+sudo rm -f ~/.bash_history ~/.zsh_history
+history -c
+sudo journalctl --vacuum-time=1s
+sudo rm -rf /var/log/*.gz /var/log/*.1 /var/log/syslog* /var/log/auth.log* /tmp/* /var/tmp/*
+sudo truncate -s 0 /var/log/wtmp /var/log/btmp /var/log/lastlog
+sudo rm -f /var/log/auth.log* /var/log/secure*
+sudo rm -rf /var/lib/dhcp/* /var/lib/dhcpcd/* /var/lib/NetworkManager/* 2>/dev/null
+sudo rm -f /etc/ssh/ssh_host_*
+sudo apt clean
+sudo rm -f /etc/machine-id
+sudo systemd-machine-id-setup
+
+
+qm template 100
+
+qm clone 100 101 --name debian01 --full 1
+
+qm set 101 --ciuser debian
+
+qm set 101 --cipassword 
+
+qm start 101
+
+qm terminal 101
+
+##############################
+
+#snapshot
+
+qm shutdown 100
+
+#to create
+qm snapshot 100 <text to expline>
+
+#to sea list snap of  machin
+qm listsnapshot 100
+
+#to rollback
+qm rollback 100 <text to expline>
+
+#מחיקת Snapshot
+qm delsnapshot 100 <text to expline>
+
+
+#############################
+
+#delit vm 
+qm destroy 101 --purge
+
+#delie Template
+qm destroy 100 --purge
+
+
+
+###########################
+
+#backup vm
+vzdump <NAMBER VM> --mode stop --compress zstd --storage local
+#check backup
+ls -lh /var/lib/vz/dump/
+
+

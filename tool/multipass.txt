@@ -1,0 +1,112 @@
+sudo snap install multipass 
+
+
+snap services multipass
+
+sudo multipass find --force-update
+
+sudo rm -rf /var/snap/multipass/common/cache/multipassd/vault/images/*
+
+sudo snap restart multipass.multipassd
+
+
+
+sudo snap start multipass
+
+
+
+sudo snap stop multipass
+
+sudo pkill -9 -f multipass
+
+
+multipass info 
+
+
+
+##multipass launch 24.04 --name xxx --cpus 1 --memory 512M --disk 15G
+#multipass launch 26.04 --name x1 --cpus 1 --memory 512M --disk 5G
+multipass launch --name x1 --cpus 1 --memory 1G --disk 5G
+
+#risize  ram memery
+multipass set local.xxx.memory=1024M
+#resize disk size 
+multipass set local.x1.disk=15G
+
+
+
+ multipass exec xxx -- ls -la
+
+
+
+
+multipass shell <name> 
+
+ multipass delete <name>
+
+
+
+multipass list --snapshots
+
+multipass info x1 --snapshots
+
+multipass delete x1.snapshot5
+
+
+
+multipass snapshot <name>
+
+multipass info <name>
+
+multipass restore < name.snapshot..>
+
+multipass restore x1.snapshot2
+
+multipass delete deel.snapshot2
+
+
+multipass purge
+
+multipass delete --purge <name>
+
+multipass get local.driver
+
+multipass set local.driver=qemu
+
+######################################################
+
+
+sudo apt update
+sudo apt install  xrdp
+sudo apt update
+sudo apt install xfce4 xfce4-goodies -y
+echo xfce4-session > ~/.xsession
+sudo systemctl restart xrdp
+
+
+
+sudo passwd ubuntu
+
+
+#on  host
+flatpak install flathub org.remmina.Remmina 
+flatpak  run org.remmina.Remmina -c rdp://<ip>
+
+
+
+##############################
+
+
+
+
+#brige net
+sudo multipass set local.bridged-network=enp1s0
+
+multipass launch --name x1 --network enp1s0
+
+
+#העתקת הסקריפט אל המכונה
+multipass transfer <file> <vm-name>:/home/ubuntu/setup.sh
+
+#הרצת הסקריפט בתוך המכונה
+multipass exec <vm> -- sudo bash /home/ubuntu/setup.sh

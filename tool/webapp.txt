@@ -1,0 +1,30 @@
+sudo apt install webapp-manager
+
+
+
+
+
+################
+sudo dnf install \                                                                                                   6m 19s  tool
+  pango-devel \
+  cairo-devel \
+  pkgconf-pkg-config \
+  gtk3-devel \
+  webkit2gtk4.1-devel \
+  librsvg2-devel \
+  patchelf \
+  gcc \
+  gcc-c++ \
+  make
+
+
+brew install pake
+
+export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" 
+
+pake https://gemini.google.com/app  --name MyApp                                                                   
+
+./myapp.AppImage
+
+
+sudo dnf install ./myapp.rpm 

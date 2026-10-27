@@ -1,0 +1,27 @@
+
+
+mkdir -p ~/.bin
+export PATH="${HOME}/.bin:${PATH}"
+
+
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+chmod a+rx ~/.bin/repo
+
+
+echo 'export PATH="$HOME/.bin:$PATH"' >> ~/.bashrc
+
+source ~/.bashrc
+
+
+
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+
+
+
+#########
+
+repo init -u https://github.com/seL4/camkes-vm-examples-manifest.git
+
+
+repo sync

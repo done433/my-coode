@@ -1,0 +1,93 @@
+
+kernel.kptr_restrict = 2        # מסתיר מצביעים
+kernel.dmesg_restrict = 1       # חוסם dmesg למשתמשים רגילים
+kernel.kexec_load_disabled = 1  # חוסם טעינת קרנל חדש
+kernel.yama.ptrace_scope = 3    # חוסם ptrace בין תהליכים
+kernel.randomize_va_space = 2   # ASLR מלא
+kernel.unprivileged_userns_clone = 0
+
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+net.ipv4.tcp_syncookies = 1
+
+
+
+
+
+
+#
+
+kernel.randomize_va_space = 2        # ASLR מלא
+fs.suid_dumpable = 0                 # אין core dumps ל־SUID
+fs.protected_hardlinks = 1           # הגנה על hardlinks
+fs.protected_symlinks = 1            # הגנה על symlinks
+kernel.yama.ptrace_scope = 1         # מגביל ptrace (אפשר לשים 2/3 לקשיח יותר)
+kernel.kptr_restrict = 2             # מסתיר כתובות קרנל
+kernel.dmesg_restrict = 1            # חוסם dmesg למשתמש רגיל
+kernel.panic = 10                    # reboot 10 שניות אחרי panic
+
+
+net.ipv4.tcp_timestamps = 0
+net.ipv4.tcp_synack_retries = 3
+
+
+net.ipv4.ip_forward = 0
+net.ipv4.conf.all.send_redirects = 0 # לא שולח ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0   # חוסם קבלת redirect
+#net.ipv4.conf.all.secure_redirects = 0   # גם redirect "מאובטח" אסור
+net.ipv4.conf.all.accept_source_route = 0 # אין source routing
+net.ipv4.conf.all.rp_filter = 1      # Reverse path filter (antispoof)
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1 # מתעלם מ־broadcast ping
+net.ipv4.icmp_ignore_bogus_error_responses = 1 # מתעלם מ־ICMP שגוי
+net.ipv4.tcp_syncookies = 1          # מגן מפני SYN flood
+net.ipv4.conf.all.log_martians = 1   # לוג לחבילות חשודות
+net.ipv4.icmp_echo_ignore_all=1
+#
+
+
+
+
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+net.ipv6.conf.all.disable_ipv6 = 1   # רק אם לא צריך IPv6
+
+##
+net.ipv6.conf.all.forwarding = 0
+net.ipv6.conf.default.router_solicitations = 0
+net.ipv6.conf.default.accept_ra_rtr_pref = 0
+net.ipv6.conf.default.accept_ra_defrtr = 0
+net.ipv6.conf.default.accept_ra_pinfo = 0
+net.ipv6.conf.default.dad_transmits = 0
+net.ipv6.conf.default.max_addresses = 1
+
+
+##
+⁄etc⁄sysctl.d⁄99-hardening.conf
+
+
+
+######################
+
+
+ם
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+
+# שמירת ההגדרות המקוריות שלך (אף שכבויות מיותרות כשה-IPv6 מושבת)
+net.ipv6.conf.all.forwarding = 0
+net.ipv6.conf.default.router_solicitations = 0
+net.ipv6.conf.default.accept_ra_rtr_pref = 0
+net.ipv6.conf.default.accept_ra_defrtr = 0
+net.ipv6.conf.default.accept_ra_pinfo = 0
+net.ipv6.conf.default.dad_transmits = 0
+
+
+
+#הסתרה  פרטים בפלט
+#kernel.dmesg_restrict=1

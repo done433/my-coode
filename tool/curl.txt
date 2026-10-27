@@ -1,0 +1,12 @@
+curl cht.sh/:help 
+
+
+curl https://cht.sh 
+
+curl ifconfig.io/{country_code,ip}     
+
+
+################################
+#check ip 
+
+curl --max-time 15 https://check.torproject.org/api/ip 2>/dev/null| jq   

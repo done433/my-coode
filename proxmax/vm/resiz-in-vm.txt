@@ -1,0 +1,14 @@
+sudo umount /mnt/data
+
+
+
+sudo pvcreate /dev/sdb1
+
+
+sudo vgextend lvmlmde /dev/sdb1
+
+
+sudo lvextend -l +100%FREE /dev/mapper/lvmlmde-root
+
+
+sudo resize2fs /dev/mapper/lvmlmde-root

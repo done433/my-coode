@@ -1,0 +1,22 @@
+#pct in  proxmax continer  manger command
+
+
+
+
+#רשימת כל הקונטיינרים
+pct list
+
+#מצב Container מסוים
+pct status <CTID>
+
+#הפעלת Container
+pct start <CTID>
+
+#כיבוי Container
+pct stop <CTID>
+
+#ריסטארט Container
+pct restart <CTID>
+
+#פתיחת מסוף Container
+pct enter <CTID>

@@ -1,0 +1,57 @@
+background #151515
+background_opacity 0.7
+background_blur 80
+inactive_window_opacity 0.7
+
+visual_bell_color none
+
+font_family MesloLGS NF
+font_size 14.0
+
+url_style underline
+url_color #ff8c42
+
+foreground #f5f5f5
+selection_background #ff8c42
+selection_foreground #151515
+
+cursor #ffb347
+cursor_text_color #151515
+
+transparent_background_colors #ff8c42@0.08 #ff3b30@0.05
+
+# ANSI Colors
+color0  #151515
+color8  #555555
+
+# אדום (שגיאות)
+color1  #ff3b30
+color9  #ff6b60
+
+# ירוק (קבצים/הצלחות)
+color2  #6fcf4f
+color10 #8de66b
+
+# כתום (פקודות)
+color3  #ff8c42
+color11 #ffb347
+
+# כחול
+color4  #5ea8ff
+color12 #8bc5ff
+
+# מג'נטה
+color5  #d16dff
+color13 #e59cff
+
+# ציאן
+color6  #55d6d3
+color14 #8ef0ee
+
+# לבן
+color7  #f5f5f5
+color15 #ffffff
+
+scrollbar_track_color #2b1a14
+scrollbar_handle_color #ff8c42
+scrollbar_track_hover_opacity 0.2

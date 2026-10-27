@@ -1,0 +1,42 @@
+mkdir -p llama
+cd llama
+
+
+
+#=== הורדת DeepSeek Coder 1.3B GGUF בלי חשבון ===
+wget "https://huggingface.co/TheBloke/deepseek-coder-1.3b-instruct-GGUF/resolve/main/deepseek-coder-1.3b-instruct.Q4_K_M.gguf"
+
+
+####
+flatpak install flathub ai.jan.Jan -y
+flatpak run ai.jan.Jan
+###
+brew install llama.cpp
+###
+
+
+
+#=== llama.cpp עם ממשק ויזואלי בדפדפן ===
+#מריץ שרת web מובנה של llama.cpp
+llama-server -m ~/llama/deepseek-coder-1.3b.gguf --port 8080
+
+
+
+http://localhost:8080
+
+
+
+
+
+
+
+#PentestAI GGUF
+   https://huggingface.co/mav23/Pentest_AI-GGUF
+
+#Lily Cybersecurity 7B
+   https://huggingface.co/QuantFactory/Lily-Cybersecurity-7B-v0.2-GGUF
+
+#SecurityLLM
+   https://huggingface.co/tensorblock/SecurityLLM-GGUF
+
+

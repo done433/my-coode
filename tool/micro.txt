@@ -1,0 +1,86 @@
+sudo apt install micro
+
+micro -plugin install lsp
+micro -plugin install filemanager
+micro -plugin install snippets
+micro -plugin install fzf
+micro -plugin install editorconfig
+
+pip install pyright
+
+
+
+cat << 'EOF' > ~/.config/micro/bindings.json
+{
+    "Alt-/": "lua:comment.comment",
+    "Alt-d": "command:definition",
+    "Alt-f": "command:format",
+    "Alt-k": "command:hover",
+    "Alt-r": "command:references",
+    "CtrlSpace": "command:lspcompletion",
+    "CtrlUnderscore": "lua:comment.comment",
+    "Ctrl-X": "command:quit"
+}
+EOF
+
+
+
+
+
+
+cat << 'EOF' >  ~/.config/micro/lsp_settings.json
+{
+    "lsp": {
+        "python": {
+            "command": "pyright-langserver",
+            "args": ["--stdio"],
+            "filetypes": ["python"]
+        }
+    }
+}
+EOF
+
+
+
+
+
+
+
+#to  open file
+micro file..
+
+
+
+
+
+
+#לפתוח את שורת הפקודות למטה
+Ctrl + e
+#to exit  line command
+esc
+
+
+
+#to search
+ctrl + f
+#to next 
+ctrl + n
+#to prives
+ctrl +p
+
+
+
+#replace 
+#in שורת הפקודות ctrl +e
+replace olld new
+
+#replace all
+replace -a olld new  
+
+
+
+#to exit file
+exit ctrl+x
+
+#to sive file
+ctrl + s

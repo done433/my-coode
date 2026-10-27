@@ -1,0 +1,156 @@
+
+sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
+
+# Add Docker's official GPG key:
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+
+
+
+
+
+
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+
+
+sudo groupadd docker
+
+
+sudo usermod -aG docker $USER
+
+
+
+
+
+
+
+sudo systemctl status docker
+
+sudo systemctl start docker
+
+
+
+
+
+
+
+
+#=== בדיקת על איזה פורטים הקונטיינרים מאזינים ===
+docker ps --format "table {{.Names}}\t{{.Ports}}"
+
+
+
+
+#############################################################################################################
+
+sudo docker stop $(sudo docker ps -q)
+
+
+sudo docker rm $(sudo docker ps -a -q)
+
+sudo docker system prune -f --volumes
+
+docker system prune -a --volumes -f
+
+
+
+
+
+
+#=== עצור את כל המיכלים הרצים ===
+docker stop $(docker ps -aq)
+
+#=== מחק את כל המיכלים ===
+docker rm -f $(docker ps -aq)
+
+#=== מחק את כל התמונות ===
+docker rmi -f $(docker images -aq)
+
+#=== מחק את כל הvolumes ===
+docker volume rm $(docker volume ls -q)
+
+#=== מחק את כל הרשתות שיצרת ===
+docker network prune -f
+
+#== מחק את כל הקבצים שנוצרו בתוך המיכלים ===
+sudo rm -rf /var/lib/docker/containers/*
+sudo rm -rf /var/lib/docker/volumes/*
+sudo rm -rf /var/lib/docker/overlay2/*
+
+#=== וידוא שהכל נמחק ===
+docker ps -a && docker images && docker volume ls
+
+
+########################################################################################################################
+
+#docker rebild
+sudo docker compose up -d --build
+
+
+docker-compose up -d        # הרצת קונטיינרים ב-background
+
+docker-compose down         # כיבוי הקונטיינרים והסרתם
+
+docker-compose ps           # הצגת סטטוס הקונטיינרים הרצים
+
+docker-compose build        # בניית הקונטיינרים לפי Dockerfile
+
+docker-compose logs         # הצגת לוגים מהקונטיינרים
+
+docker-compose exec <service> <command>  # הרצת פקודה בקונטיינר רץ (לדוג' bash)
+
+docker-compose stop         # עצירת הקונטיינרים מבלי להסירם
+
+docker-compose restart      # אתחול הקונטיינרים
+
+docker-compose config       # הצגת קובץ קונפיגורציה סופי
+
+
+
+########################################################################################################################
+
+docker network ls
+sudo docker network inspect bridge
+
+sudo docker network prune
+
+
+sudo docker inspect $(sudo docker ps -a -q) | grep -i "Gateway"
+
+
+############################################
+
+
+#הסרת קונטיינרים לא פעילים
+docker container prune
+
+#הסרת אימג'ים לא בשימוש
+docker image prune -a
+
+#הסרת ווליומים לא בשימוש
+docker volume prune
+
+#הסרת רשתות לא בשימוש
+docker network prune
+
+
+#clean all 
+docker system prune -a --volumes
+

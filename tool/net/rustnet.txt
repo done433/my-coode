@@ -1,0 +1,12 @@
+brew install rustnet
+
+# Grant capabilities to the Homebrew-installed binary (modern kernel 5.8+)
+
+sudo setcap 'cap_net_raw,cap_bpf,cap_perfmon+eip' "$(readlink -f "$(which rustnet)")"
+
+
+getcap "$(readlink -f "$(which rustnet)")"
+
+
+# Run without sudo
+rustnet

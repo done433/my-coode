@@ -1,0 +1,98 @@
+❯ cat simpalx.txt
+ wget -c https://github.com/simplex-chat/simplex-chat/releases/latest/download/simplex-desktop-ubuntu-22_04-x86_64.deb
+
+ sudo apt install ./simplex-desktop-ubuntu-22_04-x86_64.deb
+
+
+###########################################################################
+
+ curl -o- https://raw.githubusercontent.com/simplex-chat/simplex-chat/stable/install.sh | bash
+ source ~/.bashrc
+
+ls -la  ~/.local/bin/simplex-chat
+sudo apt install tor -y
+sudo systemctl enable tor
+sudo systemctl start tor
+
+simplex-chat -x
+
+# לראות את האופציות  #
+/help
+
+# ליצור משתמש ולראות חיבור וטוקן #
+/connect
+ /c
+
+
+
+
+
+sudo apt update
+sudo apt install sqlite3
+
+
+
+
+cp -r ~/.simplex ~/test
+
+
+nano 2 
+
+import sqlite3, binascii, json
+
+db_path = "/home/ubuntu/test/.simplex/simplex_v1_chat.db"
+conn = sqlite3.connect(db_path)
+cur = conn.cursor()
+
+messages = []
+cur.execute("SELECT message_id, hex(msg_body), created_at FROM messages;")
+for msg_id, hex_blob, created_at in cur.fetchall():
+    try:
+        text = bytes.fromhex(hex_blob).decode('utf-8')
+        data = json.loads(text)
+        messages.append({
+            "id": msg_id,
+            "created_at": created_at,
+            "message": data
+        })
+    except Exception as e:
+        messages.append({
+            "id": msg_id,
+            "created_at": created_at,
+            "error": str(e)
+        })
+
+print(json.dumps(messages, indent=2))
+
+
+chmod +x 2
+
+python3 2 | jq
+
+python3 2 | jq -r '.[].message.params.content.text'
+
+output="$(ls -la)"
+simplex-chat --execute "@<user to send > $output"
+
+simplex-chat --execute "@<user to send> $(ls -la)"
+
+
+
+
+########
+alias
+
+
+nano ~/.bashrc
+
+
+notify() {
+    simplex-chat --execute "@<user> $(cat)"
+}
+
+
+source ~/.bashrc
+
+
+## to use
+ls -la | notify

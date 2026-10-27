@@ -1,0 +1,168 @@
+#creaet my  many
+sudo apt update
+sudo apt install -y build-essential cmake pkgconf python3 git libevent-dev libboost-dev libsqlite3-dev
+
+
+
+cd ~
+git clone https://github.com/bitcoin/bitcoin.git
+cd bitcoin
+
+git switch -c mycoin
+
+NAME="Yossi Coin"
+TICKER="YSC"
+HRP="ysc"
+DATADIR=".yossicoin"
+MSG="Yossi Coin 12/Oct/2026 - created by Yossi"
+REWARD=50
+P2P_PORT=9333
+RPC_PORT=9332
+MAX=$((REWARD * 210000 * 2))
+
+
+
+
+
+sed -i "s|set(CLIENT_NAME \"Bitcoin Core\")|set(CLIENT_NAME \"$NAME\")|" CMakeLists.txt
+
+sed -i "s|CURRENCY_UNIT = \"BTC\"|CURRENCY_UNIT = \"$TICKER\"|" src/policy/feerate.h
+
+sed -i "s|CAmount nSubsidy = 50 \* COIN;|CAmount nSubsidy = $REWARD * COIN;|" src/validation.cpp
+
+sed -i "s|MAX_MONEY = 21000000 \* COIN;|MAX_MONEY = $MAX * COIN;|" src/consensus/amount.h
+
+sed -i "s|return pathRet / \".bitcoin\";|return pathRet / \"$DATADIR\";|" src/common/args.cpp
+
+sed -i "s|CBaseChainParams>(\"\", 8332)|CBaseChainParams>(\"\", $RPC_PORT)|" src/chainparamsbase.cpp
+
+
+F=src/kernel/chainparams.cpp
+R='/class CMainParams/,/^};/'
+
+sed -i "$R{/script_flag_exceptions.emplace(/,+1d}" $F
+
+sed -i "$R{s|BIP34Height = 227931;|BIP34Height = 1;|;s|BIP34Hash = uint256{\"[0-9a-f]*\"};|BIP34Hash = uint256{};|;s|BIP65Height = 388381;|BIP65Height = 1;|;s|BIP66Height = 363725;|BIP66Height = 1;|;s|CSVHeight = 419328;|CSVHeight = 1;|;s|SegwitHeight = 481824;|SegwitHeight = 0;|;s|MinBIP9WarningHeight = 483840;|MinBIP9WarningHeight = 0;|}" $F
+
+sed -i "$R{s|powLimit = uint256{\"00000000ffff|powLimit = uint256{\"00000fffffff|}" $F
+
+sed -i "$R{s|nMinimumChainWork = uint256{\"[0-9a-f]*\"};|nMinimumChainWork = uint256{};|;s|defaultAssumeValid = uint256{\"[0-9a-f]*\"};|defaultAssumeValid = uint256{};|}" $F
+
+sed -i "$R{s|pchMessageStart\[0\] = 0xf9;|pchMessageStart[0] = 0xd1;|;s|pchMessageStart\[1\] = 0xbe;|pchMessageStart[1] = 0x7c;|;s|pchMessageStart\[2\] = 0xb4;|pchMessageStart[2] = 0xe3;|;s|pchMessageStart\[3\] = 0xd9;|pchMessageStart[3] = 0x9a;|;s|nDefaultPort = 8333;|nDefaultPort = $P2P_PORT;|;s|m_assumed_blockchain_size = [0-9]*;|m_assumed_blockchain_size = 1;|;s|m_assumed_chain_state_size = [0-9]*;|m_assumed_chain_state_size = 1;|}" $F
+
+sed -i "$R{/vSeeds.emplace_back(/d;s|vFixedSeeds = std::vector<uint8_t>(std::begin(chainparams_seed_main), std::end(chainparams_seed_main));|vFixedSeeds.clear();|}" $F
+
+sed -i "$R{s|(1,0);|(1,30);|;s|(1,5);|(1,22);|;s|(1,128);|(1,158);|;s|bech32_hrp = \"bc\";|bech32_hrp = \"$HRP\";|}" $F
+
+sed -i "$R{/m_assumeutxo_data = {/,/^        };/c\\        m_assumeutxo_data = {};
+}" $F
+sed -i "$R{/chainTxData = ChainTxData{/,/^        };/c\\        chainTxData = ChainTxData{.nTime = 0, .tx_count = 0, .dTxRate = 0};
+}" $F
+
+
+
+openssl ecparam -name secp256k1 -genkey -noout -out ~/mycoin-key.pem
+chmod 600 ~/mycoin-key.pem
+PUBKEY=$(openssl ec -in ~/mycoin-key.pem -pubout -conv_form compressed -outform DER 2>/dev/null | tail -c 33 | od -An -tx1 | tr -d ' \n')
+echo "PUBKEY=$PUBKEY"
+
+
+
+read GTIME GNONCE GHASH GMERKLE < <(python3 - "$MSG" "$PUBKEY" "$REWARD" <<'PYEOF'
+import hashlib, struct, sys, time
+msg, pub, reward = sys.argv[1].encode(), bytes.fromhex(sys.argv[2]), int(sys.argv[3])
+d = lambda b: hashlib.sha256(hashlib.sha256(b).digest()).digest()
+def push(x):
+    return (bytes([len(x)]) if len(x) < 76 else b"\x4c" + bytes([len(x)])) + x
+sig = push(struct.pack("<I", 486604799)) + push(b"\x04") + push(msg)
+spk = push(pub) + b"\xac"
+tx = (struct.pack("<i", 1) + b"\x01" + b"\x00"*32 + b"\xff"*4 + bytes([len(sig)]) + sig + b"\xff"*4
+      + b"\x01" + struct.pack("<q", reward * 10**8) + bytes([len(spk)]) + spk + b"\x00"*4)
+merkle = d(tx)
+bits = 0x1e0fffff
+target = (bits & 0xffffff) << (8 * ((bits >> 24) - 3))
+t, n = int(time.time()), 0
+while True:
+    h = d(struct.pack("<i", 1) + b"\x00"*32 + merkle + struct.pack("<III", t, bits, n))
+    if int.from_bytes(h, "little") <= target:
+        break
+    n += 1
+print(t, n, h[::-1].hex(), merkle[::-1].hex())
+PYEOF
+)
+echo "Time=$GTIME Nonce=$GNONCE"
+echo "Hash=$GHASH"
+echo "Merkle=$GMERKLE"
+
+
+sed -i "$R{s|genesis = CreateGenesisBlock(1231006505, 2083236893, 0x1d00ffff, 1, 50 \* COIN);|genesis = CreateGenesisBlock(\"$MSG\", CScript() << \"$PUBKEY\"_hex << OP_CHECKSIG, $GTIME, $GNONCE, 0x1e0fffff, 1, $REWARD * COIN);|;s|hashGenesisBlock == uint256{\"[0-9a-f]*\"}|hashGenesisBlock == uint256{\"$GHASH\"}|;s|hashMerkleRoot == uint256{\"[0-9a-f]*\"}|hashMerkleRoot == uint256{\"$GMERKLE\"}|}" $F
+
+
+
+
+
+
+
+
+
+
+
+
+sudo apt install -y build-essential cmake pkgconf python3 libevent-dev libboost-dev libsqlite3-dev
+
+
+
+cd ~/bitcon/bitcoin
+cmake -B build -DENABLE_IPC=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_BENCH=OFF
+
+mkdir -p ~/buildtmp
+export TMPDIR=~/buildtmp
+
+
+
+#===בנייה===
+cmake --build build -j$(nproc)
+
+#===בדיקה שהבנייה הצליחה===
+build/bin/bitcoind -version | head -1
+
+
+rm -rf ~/buildtmp
+
+
+
+##start
+build/bin/bitcoind -daemon -fallbackfee=0.0001
+
+##chek many and  block
+build/bin/bitcoin-cli -getinfo
+
+#chek  nambers block
+build/bin/bitcoin-cli getblockcount
+
+#check port
+ss -ltnp | grep bitcoind
+
+
+
+build/bin/bitcoin-cli createwallet "main"
+build/bin/bitcoin-cli getnewaddress > ~/my-coin-address.txt
+#כך טוענים את הכתובת בכל טרמינל חדש; תוסיף את השורה הזו לתיעוד שלך
+ADDR=$(cat ~/my-coin-address.txt)
+echo $ADDR
+
+
+
+
+
+#===כרייה, עם מספר ניסיונות גדול===
+build/bin/bitcoin-cli generatetoaddress 101 $ADDR 100000000
+build/bin/bitcoin-cli -getinfo
+
+
+
+#===הארנק כבר קיים; אם בעתיד אחרי הפעלה מחדש הוא לא טעון, טוענים אותו כך===
+cd ~/bitcoin
+build/bin/bitcoin-cli loadwallet "main" 2>/dev/null
+ADDR=$(cat ~/my-coin-address.txt)
+echo $ADDR

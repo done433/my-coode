@@ -1,0 +1,28 @@
+set disable-completion off
+
+
+
+############
+
+set skip-completed-text on
+
+
+
+
+################
+################
+
+set input-meta on
+set convert-meta off
+set output-meta on
+set keymap default
+
+
+TAB: menu-complete
+set show-all-if-ambiguous off
+set skip-completed-text on
+set completion-ignore-case on
+
+"\ef": forward-word
+
+

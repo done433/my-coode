@@ -1,0 +1,6 @@
+sudo systemctl stop cups.service cups.socket cups.path avahi-daemon.service avahi-daemon.socket systemd-resolved.service systemd-resolved-monitor.socket systemd-resolved-varlink.socket
+
+sudo systemctl disable cups.service cups.socket cups.path avahi-daemon.service avahi-daemon.socket systemd-resolved.service
+
+
+sudo systemctl mask cups.service cups.socket cups.path avahi-daemon.service avahi-daemon.socket systemd-resolved.service systemd-resolved-monitor.socket systemd-resolved-varlink.socket

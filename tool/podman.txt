@@ -1,0 +1,202 @@
+sudo apt update
+sudo apt install -y podman uidmap slirp4netns fuse-overlayfs
+sudo apt install podman-compose
+
+systemctl --user status podman.socket
+
+systemctl --user start podman.socket
+
+
+
+podman compose up -d
+
+
+
+
+
+
+sudo systemctl status podman.service
+
+sudo systemctl status podman.socket 
+
+
+
+
+
+
+#################
+
+#to disable
+podman update --restart=no <continer-name>
+
+#to enable
+podman container update --restart=always <continer-name>
+
+#to chech
+podman inspect syncthing-toolbox --format '{{.HostConfig.RestartPolicy.Name}}'
+
+
+
+#################
+
+sudo nano /etc/containers/registries.conf
+
+unqualified-search-registries = ["docker.io"]
+
+
+################# 
+ 
+podman pull docker.io/mikesplain/openvas
+ 
+podman run -d -p 8443:443 --name openvas docker.io/mikesplain/openvas
+
+
+https://localhost:8443
+
+Username: admin
+Password: admin
+
+
+
+podman exec -it openvas bash
+## inside container
+greenbone-nvt-sync
+openvasmd --rebuild --progress
+greenbone-certdata-sync
+greenbone-scapdata-sync
+openvasmd --update --verbose --progress
+
+/etc/init.d/openvas-manager restart
+/etc/init.d/openvas-scanner restart
+
+
+################## 
+
+ 
+podman pull kali-rolling
+
+podman run --tty --interactive --name kali kali-rolling
+
+#basic  install command
+apt update && apt install -y procps iproute2 usbutils util-linux systemd systemd-sysv sudo curl wget vim nano less man-db bash-completion net-tools iputils-ping dnsutils lsof strace file tree htop ca-certificates gnupg git
+
+
+#######################
+
+
+ podman run -d --name ollama -p 127.0.0.1:11434:11434 -v ollama:/root/.ollama docker.io/ollama/ollama
+ 
+ 
+ 
+ podman exec -it ollama ollama pull deepseek-coder:1.3b
+ 
+ 
+ podman exec -it ollama ollama pull qwen2.5-coder:1.5b-base 
+ 
+
+
+########################
+
+podman pull ubuntu:latest
+
+podman run -it --name ubuntu docker.io/library/ubuntu bash
+
+podman start -ai ubuntu 
+ 
+##########################################################
+podman pull public.ecr.aws/ubuntu/ubuntu:22.04
+
+podman run -it --name ubuntu-full ubuntu:22.04 bash
+
+
+podman pull docker.io/ollama/ollama
+ 
+podman exec -it ollama ollama list 
+  
+###########################################################
+
+#to dowonlod
+podman pull debian:latest
+
+#to crieit and run
+podman run -it --name debian debian:latest bash
+
+
+
+#to start  and  get  in 
+podman start -ai debian
+
+
+
+
+#to add  no  root user in run continer
+
+podman start debian && podman exec -it debian bash -c '
+apt update &&
+apt install -y sudo &&
+useradd -m -s /bin/bash asd &&
+echo "asd ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/asd &&
+chmod 440 /etc/sudoers.d/asd &&
+su - asd
+' 
+
+#to start  and gen  in  no  root 
+podman start debian && podman exec -it --user <usr> debian bash
+
+podman start debian >/dev/null 2>&1; podman exec -it --user asd debian bash
+
+
+
+
+podman exec -it --user asd  --workdir /home/asd debian  zsh  
+
+
+
+#bekup all continet and file ...
+podman commit debian debian-backup
+
+
+
+
+#to run copy imge and  delit when exit
+podman run --rm -it \
+  --user asd \
+  --entrypoint zsh \
+  localhost/debian-backup:latest
+
+
+
+#to run copy imge and  delit when exit in spsific  derectory
+podman run --rm -it \
+  --user asd \
+  --workdir /home/asd \
+  --entrypoint zsh \
+  localhost/debian-backup:latest
+
+
+###########################################################
+podman container prune -f
+
+podman system prune -a
+
+
+
+# עצירת כל הקונטיינרים שרצים
+podman stop -a
+
+# מחיקת כל הקונטיינרים
+podman rm -a -f
+
+# מחיקת כל התמונות
+podman rmi -a -f
+
+# מחיקת כל ה-volumes
+podman volume rm -a -f
+
+# ניקוי מלא של storage, cache ושכבות
+podman system reset -f
+
+podman ps -a
+podman images
+podman volume ls
+

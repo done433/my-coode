@@ -1,0 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################
+#fix no  conact on  qm terminal , to  this  command on  vm itself
+systemctl enable --now serial-getty@ttyS0.service
+
+systemctl status serial-getty@ttyS0.service --no-pager

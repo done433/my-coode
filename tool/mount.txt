@@ -1,0 +1,20 @@
+
+#יצירת “דיסק” בתוך מערכת הלינוקס
+dd if=/dev/zero of=mydisk.img bs=1M count=1024
+
+
+#הפיכת הקובץ לדיסק עם מערכת קבצים
+mkfs.ext4 mydisk.img
+
+#צירת נקודת חיבור
+mkdir /mnt/mydisk
+
+#חיבור הדיסק (mount)
+sudo mount -o loop mydisk.img /mnt/mydisk
+
+#go in
+cd /mnt/mydisk
+
+#ניתוק הדיסק
+sudo umount /mnt/mydisk
+

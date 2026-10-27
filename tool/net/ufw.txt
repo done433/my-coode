@@ -1,0 +1,24 @@
+
+sudo ufw default deny incoming
+
+sudo ufw default allow outgoing
+
+sudo ufw default deny routed
+
+
+#חסימה מוחלטת של כל גישה נכנסת דרך כרטיס הווייפיי:
+sudo ufw deny in on wlp0s20f3
+
+# אישור גישה חופשית לממשק הפנימי
+sudo ufw allow in on lo
+
+sudo ufw enable
+
+sudo ufw reload
+
+
+sudo ufw status verbose
+
+
+#se real time black
+sudo journalctl -k -f | grep 'UFW BLOCK'

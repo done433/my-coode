@@ -1,0 +1,11 @@
+sudo apt update && sudo apt full-upgrade -y
+
+sudo apt install spice-vdagent qemu-guest-agent -y
+
+sudo apt update
+sudo apt install -y qemu-guest-agent spice-vdagent spice-webdavd open-vm-tools
+ open-vm-tools-desktop  cloud-init  open-vm-tools-containerinfo  open-vm-tools-salt-minion 
+ 
+sudo systemctl enable qemu-guest-agent
+sudo systemctl enable spice-vdagent 
+sudo systemctl enable spice-webdavd 

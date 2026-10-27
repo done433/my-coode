@@ -1,0 +1,59 @@
+#ביטול עגינת המחיצה
+
+sudo umount /mnt/sda
+
+#ביטול הפעלת ה־Logical Volumes
+
+sudo lvchange -an /dev/pve/swap
+sudo lvchange -an /dev/pve/root
+
+#פתיחת fdisk עבור הדיסק
+
+sudo fdisk /dev/sda
+
+#יצירת מערכת קבצים ext4
+
+sudo mkfs.ext4 /dev/sda1
+
+#יצירת נקודת עגינה
+
+sudo mkdir /mnt/sda
+
+#עגינת המחיצה
+
+sudo mount /dev/sda1 /mnt/sda
+
+#הצגת UUID של המחיצה
+
+sudo blkid /dev/sda1
+
+dev/sda1: UUID="..............." TYPE="ext4"
+
+#עריכת קובץ fstab
+
+sudo nano /etc/fstab
+
+UUID=<id..............>  /mnt/sda  ext4  defaults  0  2
+
+#טעינת כל המחיצות מקובץ fstab
+
+sudo mount -a
+
+#יצירת טבלת מחיצות מסוג GPT
+
+sudo parted /dev/sda mklabel gpt
+
+#יצירת מחיצה ראשית מסוג ext4 על כל הדיסק
+
+sudo parted /dev/sda mkpart primary ext4 0% 100%
+
+#יצירת מערכת קבצים ext4
+
+sudo mkfs.ext4 /dev/sda1
+
+#עגינת המחיצה
+
+sudo mount /dev/sda1 /mnt
+
+
+

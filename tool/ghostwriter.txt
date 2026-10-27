@@ -1,0 +1,22 @@
+
+sudo apt install -y ghostwriter 
+
+flatpak install flathub org.kde.ghostwriter
+￼
+
+#and simpale text editor 
+
+sudo apt install xed
+
+
+#to viwe  pdf
+
+sudo apt install okular
+
+#to se menu bar
+cntrl + M 
+
+#to select txt
+ctrl +4
+
+

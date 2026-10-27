@@ -1,0 +1,11 @@
+
+#to install twrp 
+wget -c https://eu.dl.twrp.me/hero2lte/twrp-3.7.0_9-1-hero2lte.img
+
+# in dawnlod mode 
+
+heimdall detect
+
+sudo heimdall flash --RECOVERY twrp-3.7.0_9-1-hero2lte.img --no-reboot  
+
+

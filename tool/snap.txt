@@ -1,0 +1,93 @@
+
+
+1. sudo apt update  
+
+2. sudo apt install -y snapd  
+
+sudo systemctl start snapd.socket
+sudo systemctl enable snapd.socket
+systemctl enable --now snapd.apparmor
+4. ln -s /var/lib/snapd/snap /snap  
+   יוצר קישור סימבולי שנדרש עבור חבילות snap במצב classic
+   (כמו pycharm-community).
+
+##########
+
+#path
+
+echo 'export PATH=$PATH:/snap/bin' >> ~/.zshrc
+source ~/.zshrc
+
+
+
+
+5. snap version  
+   בדיקה ש-snap מותקן ועובד תקין.
+
+
+sudo snap install pycharm-community --classic
+sudo snap install auto-cpufreq --classic
+sudo snap install thonny  
+sudo snap install pycharm-community  
+
+##to see list install snap appsn app
+
+snap list | awk '!/^Name|^core/ {print $1}'
+
+
+#to delit app apps from snap
+
+for s in $(snap list | awk 'NR>1 {print $1}' | grep -v '^snapd$'); do sudo snap remove --purge "$s"; done; sudo apt purge -y snapd
+
+
+sudo snap remove --purge $(snap list | awk '!/^Name|^core/ {print $1}')
+
+
+###
+#delite snap
+
+sudo systemctl stop snapd.service snapd.socket
+sudo apt purge -y snapd gnome-software-plugin-snap
+sudo rm -rf ~/snap /snap /var/snap /var/lib/snapd
+
+#to check
+dpkg -l | grep snapd  
+
+ls -la /snap /var/snap /var/lib/snapd ~/snap 
+
+systemctl status snapd
+
+
+
+
+
+
+
+auto-cpufreq
+bare
+bitwarden
+chromium
+core
+core18
+core20
+core22
+core24
+cups
+firefox
+firmware-updater
+gnome-3-28-1804
+gnome-3-34-1804
+gnome-42-2204
+gnome-46-2404
+gtk-common-themes
+hello-world
+kubectl
+mesa-2404
+multipass
+pycharm-community
+riseup-vpn
+snap-store
+snapd
+snapd-desktop-integration
+thonny
+tldr

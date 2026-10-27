@@ -1,0 +1,1 @@
+scp -r root@192.168.8.124:/etc/fail2ban /home/<USER>/Desktop/my-command/proxmax/fail2ban/config_etc

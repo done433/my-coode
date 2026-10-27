@@ -1,0 +1,69 @@
+#to install
+sudo apt install network-manager
+
+#to reed siting if  good
+sudo NetworkManager --print-config
+
+
+
+# ================================================
+# nmcli - ניהול חיבורים ורשתות ב-Linux
+# ================================================
+
+#nmcli general status
+nmcli general status
+
+# הצגת כל המכשירים (Devices) המחוברים
+nmcli device
+
+# הצגת מידע על הרשתות (שימוש ב-inxi, צריך להתקין inxi)
+inxi -n
+
+
+#to scan 2.4 wifi 
+nmcli radio wifi && nmcli device wifi list
+# הצגת רשימת רשתות Wi-Fi זמינות
+nmcli dev wifi list
+
+#הצגת רשימת רשתות Wi-Fi זמינות ממשק  או  כרטיס  רשת  ספציפי 
+nmcli device wifi list ifname wlp0s20f3
+
+
+# הצגת כל החיבורים שמוגדרים במערכת
+nmcli connection show
+
+# הצגת רשתות Wi-Fi זמינות
+nmcli dev wifi
+
+# יצירת חיבור Wi-Fi חדש עם WPA/WPA2
+nmcli connection add type wifi con-name "My-Wifi-Connection" ifname "wlp3s0" ssid "SSID" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "WEP_PASSWORD"
+
+# התחברות לרשת Wi-Fi עם סיסמה
+nmcli dev wifi connect "SSID" password "PASSWORD"
+
+# התחברות לרשת Wi-Fi ספציפית על ממשק מסוים
+nmcli device wifi connect "SSID" password "PASSWORD" ifname "wlp3s0"
+
+# התחברות לרשת Wi-Fi פתוחה (ללא סיסמה)
+nmcli device wifi connect "SSID" ifname "wlp3s0"
+
+# התחברות לרשת Wi-Fi (אם אין צורך לציין ממשק או סיסמה)
+nmcli dev wifi connect "SSID"
+
+# הצגת חיבורים פעילים
+nmcli connection show --active
+
+# ניתוק חיבור מסוים
+nmcli connection down "MyUSBWiFi"
+
+# שינוי עדיפות (priority) של חיבורי רשת
+nmcli connection modify "MyHomeWiFi" ipv4.priority 100  # חיבור מועדף יותר
+nmcli connection modify "MyUSBWiFi" ipv4.priority 50    # חיבור עם עדיפות נמוכה יותר
+
+# סריקת רשתות Wi-Fi עם מידע על ESSID, רמת האות והצפנה (צריך הרשאות sudo)
+sudo iwlist wlan0 scan | grep -E 'ESSID|Signal level|Encryption key'
+
+
+
+#להשתמש ב־IP קבוע
+sudo nmcli connection modify <UUID> ipv4.method manual ipv4.addresses 192.168.8.178/24

@@ -1,0 +1,138 @@
+
+
+git config --global user.name "<name>"
+git config --global user.email "<mail>"
+
+ssh -T git@gitlab.com
+
+git clone git@gitea.com:<user-name>/<progect>
+
+cd <project>
+
+
+
+
+
+git remote add origin <progect-url>.git
+
+git push origin main 
+
+
+git status
+
+#to see what  is chinch when push 
+git show 
+
+#############################################################################
+
+
+#to pull diff
+git fetch
+
+#if have diff betwin me and web to chack
+git diff main origin/main | cat 
+
+#like bifore just see wall
+git log --oneline --graph --all | batcat -l pc -pp
+
+git log --oneline --graph --decorate --all | batcat -l pc -pp
+
+#to push my file  and to get web file 
+git pull --no-rebase   
+#and after to up my file to whab 
+git push
+
+
+
+#to see all commit log
+git log origin/main  | batcat -l pc -pp
+
+
+#to  go  back the id commit
+git reset --soft <commit_hash> 
+
+
+
+#to go back the 1 back commit
+git restore .
+
+
+#####################################################################################
+
+#לראות את כל הענפים המקומיים  הענף שאתה נמצא בו עכשיו יהיה מסומן בכוכבית *. 
+
+git branch | cat
+
+# מציג את כל הענפים שקיימים ב־remote (למשל ב־Gitea).
+
+git branch -r
+
+
+#יצירה ענץ 2
+git switch -c main2
+
+# to swich the bransh 
+git switch main2
+
+
+#to push to the bransh
+git push origin main2
+
+
+
+
+
+
+
+################################################################################
+
+
+
+
+nano  ~/.gitconfig
+
+
+[user]
+	name = <usr name ...>
+	email = <mail..>
+
+
+
+###############################################################################################
+
+
+
+
+
+git init
+
+git  add .
+git commit -m " <explin...> "
+git push 
+
+
+git status
+
+
+
+
+
+################################################################################################333
+
+# gitlab tool
+
+sudo apt install gh 
+
+glab auth login
+
+glab repo list
+
+
+
+
+#################################
+
+
+
+sudo apt install git-filter-repo
+

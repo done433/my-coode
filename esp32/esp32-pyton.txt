@@ -1,0 +1,19 @@
+#IDE for python to ESP
+#flatpak install flathub org.thonny.Thonny 
+#sudo apt install python3-tk thonny
+
+pipx install thonny
+
+thonny
+
+#doonlode firemwar  to flash python relise from
+http://micropython.org/download/ESP32_GENERIC/
+
+#fore esp32-c3-seeedstudio
+https://micropython.org/download/SEEED_XIAO_ESP32C3/
+
+#to clean
+esptool.py --port /dev/ttyACM0 erase_flash 
+
+#to flash
+esptool.py --port /dev/ttyACM0 write_flash 0   <FILE-NAME> 

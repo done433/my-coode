@@ -1,0 +1,39 @@
+
+
+python3 -m pip install --user esptool 
+python3 -m pip install --user --upgrade meshtastic
+
+ls /dev/ttyACM0
+
+git clone https://github.com/benb0jangles/seeed-xiao-esp32c3-meshtastic.git
+
+chmod +x flash.sh
+./flash.sh
+
+#*************
+#   1. Hold the BOOT button on the ESP32-C3
+#   2. While holding BOOT, press and release RESET
+#   3. Release BOOT and try flashing again
+#*************
+
+
+#disconerct  usb  cabel 
+#conect usb cabel 
+
+meshtastic --port /dev/ttyACM0 --info
+
+meshtastic --port /dev/ttyACM0 --get bluetooth
+
+meshtastic --port /dev/ttyACM0 --set lora.region US 
+
+#website app
+
+https://client.meshtastic.org/nodes
+
+
+
+#Bluetooth: פעיל לחלוטין במצב FIXED_PIN עם הקוד 123456
+
+
+#after conecn  in  blututh to computer to  get  shell in  dev
+bluetoothctl

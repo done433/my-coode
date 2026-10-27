@@ -1,0 +1,7 @@
+
+#to see ip like hostname -I
+
+uci show network
+
+ip route get 1 | awk '{print $7;exit}'
+

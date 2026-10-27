@@ -1,0 +1,287 @@
+
+
+cd /var/lib/vz/template/iso/
+
+
+wget https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/44.20260913.3.2/x86_64/fedora-coreos-44.20260913.3.2-proxmoxve.x86_64.qcow2.xz
+
+
+
+
+#===מה הבלוק הזה עושה: הכל מאפס===
+#1. מוחק לגמרי את מכונה 1200: המכונה, הדיסק שלה וכונן ה-cloud-init שלה.
+#2. מוחק את קבצי ה-Ignition הקודמים, כולל הגיבוי .bak.
+#3. מוחק את ה-qcow2 שנפתח קודם, ופותח אותו מחדש מ-fadora.iso אחרי בדיקת שלמות.
+#4. מבקש סיסמה חדשה למשתמש core.
+#5. בונה Ignition חדש: משתמש core עם סיסמה ומפתח, ו-IP קבוע 10.10.10.40. בלי /etc/hostname, כי את השם fcos נותן Proxmox.
+#6. יוצר את מכונה 1200 מחדש עם ההגדרות שבחרת: 1 core, cpu x86-64-v3, זיכרון 2176, רשת vmbr1, דיסק 20G. ואז מפעיל אותה.
+#מה לא נוגעים בו: המכונות האחרות, הקובץ fadora.iso והדיסק sdb עם הגיבוי.
+
+bash <<'EOF'
+set -euo pipefail
+
+#===הגדרות===
+VMID=1200
+NAME=fcos
+SRC=/var/lib/vz/template/iso/fadora.iso
+DIR=/var/lib/vz/template/fcos
+QCOW=$DIR/fedora-coreos-44.20260913.3.2-proxmoxve.x86_64.qcow2
+SNIPDIR=/var/lib/vz/snippets
+IGN=fcos-$VMID.ign
+PUB=/root/.ssh/id_ed25519-proxmax-vm.pub
+
+#===בדיקות מקדימות===
+[ -f "$SRC" ] || { echo "עצירה: לא נמצא $SRC"; exit 1; }
+[ -f "$PUB" ] || { echo "עצירה: לא נמצא $PUB"; exit 1; }
+
+#===מחיקה מלאה של מכונה 1200===
+if qm status $VMID >/dev/null 2>&1; then
+  qm stop $VMID || true
+  qm destroy $VMID --purge
+  echo "VM $VMID נמחקה"
+fi
+
+#===מחיקת קבצים ישנים===
+rm -f "$SNIPDIR/$IGN" "$SNIPDIR/$IGN.bak"
+rm -rf "$DIR"
+
+#===פתיחה מחדש של התמונה מ-fadora.iso===
+echo "בודק שהקובץ שלם..."
+xz -t "$SRC"
+mkdir -p "$DIR" "$SNIPDIR"
+xz -d -c "$SRC" > "$QCOW"
+file "$QCOW"
+
+#===סיסמה חדשה למשתמש core===
+#הסיסמה לא מוצגת בזמן ההקלדה
+read -r -s -p "הקלד סיסמה חדשה למשתמש core: " PW < /dev/tty; echo
+HASH=$(printf '%s' "$PW" | openssl passwd -6 -stdin)
+unset PW
+KEY=$(cat "$PUB")
+
+#===יצירת Ignition חדש===
+python3 - "$KEY" "$HASH" > "$SNIPDIR/$IGN" <<'PY'
+import sys, json, urllib.parse
+key, pw = sys.argv[1], sys.argv[2]
+nm = """[connection]
+id=ens18
+type=ethernet
+interface-name=ens18
+
+[ipv4]
+method=manual
+addresses=10.10.10.40/24
+gateway=10.10.10.1
+dns=8.8.8.8;
+
+[ipv6]
+method=disabled
+"""
+print(json.dumps({
+    "ignition": {"version": "3.4.0"},
+    "passwd": {"users": [{"name": "core", "passwordHash": pw, "sshAuthorizedKeys": [key]}]},
+    "storage": {"files": [{
+        "path": "/etc/NetworkManager/system-connections/ens18.nmconnection",
+        "mode": 384,
+        "overwrite": True,
+        "contents": {"source": "data:," + urllib.parse.quote(nm)}
+    }]}
+}, indent=2))
+PY
+chmod 600 "$SNIPDIR/$IGN"
+
+#===snippets באחסון local===
+#שומר את סוגי התוכן הקיימים ומוסיף להם snippets, אם עדיין לא קיים
+CUR=$(awk '/^dir: local$/{f=1;next} f&&$1=="content"{print $2;exit}' /etc/pve/storage.cfg)
+case ",$CUR," in *,snippets,*) ;; *) pvesm set local --content "$CUR,snippets";; esac
+
+#===יצירת המכונה מחדש עם ההגדרות שלך===
+qm create $VMID --name $NAME --memory 2176 --cores 1 --sockets 1 --cpu x86-64-v3 --ostype l26 \
+  --net0 virtio,bridge=vmbr1 --scsihw virtio-scsi-pci \
+  --scsi0 local:0,import-from="$QCOW",format=qcow2 \
+  --boot order=scsi0 --serial0 socket
+qm disk resize $VMID scsi0 20G
+
+#===כונן cloud-init שמעביר את ה-Ignition===
+qm set $VMID --ide2 local:cloudinit
+qm set $VMID --cicustom vendor=local:snippets/$IGN
+
+#===הצגת ההגדרות והפעלה===
+qm config $VMID
+qm start $VMID
+echo "הכל הסתיים"
+EOF
+
+
+
+
+qm  terminal 1200
+
+user: core
+pass:<pass>
+
+
+
+
+rpm-ostree status
+
+ping -c 3 8.8.8.8
+ping -c 3 fedoraproject.org
+
+
+rpm-ostree update
+
+rpm-ostree upgrade
+
+
+#===אחרי ההפעלה===
+#1. בממשק הווב: VM 1200 > Console. חכה דקה-שתיים.
+#   התחבר עם core והסיסמה החדשה, ואז הקלד: ip -4 a
+#   אמורה להופיע הכתובת 10.10.10.40.
+#2. מה-Shell של Proxmox:
+#   ssh -i /root/.ssh/id_ed25519-proxmax-vm core@10.10.10.40
+#3. אם שוב מופיע :/root#, הקלד בקונסולה את הפקודה הבאה ושלח לי את הפלט:
+#   journalctl -t ignition --no-pager | grep -i -E "error|fail|exists"
+
+
+
+
+
+
+##########################################################
+
+#to clone
+
+
+#===שכפול מכונת CoreOS חדשה מתבנית 9000===
+#שימוש: /root/fcos-clone.sh <ID> <שם> <IP>
+#דוגמה: /root/fcos-clone.sh 1201 fcos2 10.10.10.41
+
+
+
+
+
+
+
+
+#===איך זה עובד ב-CoreOS (חשוב)===
+#אסור להפוך את מכונה 1200 לתבנית. Ignition רץ רק בהפעלה הראשונה, ו-1200 כבר עלתה.
+#כל שכפול שלה היה מקבל אותו IP (10.10.10.40), אותם מפתחות SSH ואותו machine-id. זה יוצר התנגשויות ברשת.
+#הדרך הנכונה: תבנית חדשה (9000) מהתמונה הנקייה, שאף פעם לא מופעלת.
+#כל שכפול ממנה מקבל Ignition משלו, עם IP משלו, ועולה בפעם הראשונה כמכונה חדשה לגמרי.
+#מכונה 1200 נשארת כמו שהיא.
+#
+#===הדיסק הגדול===
+#הבנתי שהכוונה לקובץ ה-qcow2 הפתוח בתיקייה /var/lib/vz/template/fcos (בערך 10G).
+#אחרי שהתבנית נוצרת, יש לה עותק משלה של הדיסק, ולכן הבלוק מוחק את הקובץ הזה.
+#הקובץ fadora.iso (הדחוס, בערך 1G) נשאר, כדי שתמיד תוכל ליצור את התבנית מחדש.
+#
+#===מה הבלוק עושה===
+#1. יוצר תבנית 9000 (fcos-template) עם ההגדרות שלך: 1 core, x86-64-v3, זיכרון 2176, vmbr1. התבנית לא מופעלת אף פעם.
+#2. מוחק את קובץ ה-qcow2 הגדול.
+#3. יוצר סקריפט /root/fcos-clone.sh, שמשכפל מכונה חדשה בפקודה אחת.
+
+bash <<'EOF'
+set -euo pipefail
+
+TID=9000
+QCOW=/var/lib/vz/template/fcos/fedora-coreos-44.20260913.3.2-proxmoxve.x86_64.qcow2
+
+#===בדיקות===
+if qm status $TID >/dev/null 2>&1; then echo "עצירה: VM $TID כבר קיימת"; exit 1; fi
+[ -f "$QCOW" ] || { echo "עצירה: לא נמצא $QCOW"; exit 1; }
+
+#===יצירת התבנית===
+#הדיסק נשאר בגודל המקורי של התמונה. כל שכפול מוגדל ל-20G
+qm create $TID --name fcos-template --memory 2176 --cores 1 --sockets 1 --cpu x86-64-v3 --ostype l26 \
+  --net0 virtio,bridge=vmbr1 --scsihw virtio-scsi-pci \
+  --scsi0 local:0,import-from="$QCOW",format=qcow2 \
+  --boot order=scsi0 --serial0 socket
+qm set $TID --ide2 local:cloudinit
+qm template $TID
+echo "תבנית $TID נוצרה"
+
+#===מחיקת קובץ ה-qcow2 הגדול===
+rm -f "$QCOW"
+rmdir /var/lib/vz/template/fcos 2>/dev/null || true
+
+#===יצירת סקריפט השכפול===
+cat > /root/fcos-clone.sh <<'SCRIPT'
+#!/bin/bash
+#===שכפול מכונת CoreOS חדשה מתבנית 9000===
+#שימוש: /root/fcos-clone.sh <ID> <שם> <IP>
+#דוגמה: /root/fcos-clone.sh 1201 fcos2 10.10.10.41
+set -euo pipefail
+TID=9000
+[ $# -eq 3 ] || { echo "שימוש: $0 <ID> <שם> <IP>"; exit 1; }
+VMID=$1; NAME=$2; IP=$3
+SNIP=/var/lib/vz/snippets/fcos-$VMID.ign
+PUB=/root/.ssh/id_ed25519-proxmax-vm.pub
+
+#===בדיקות===
+if qm status $VMID >/dev/null 2>&1; then echo "עצירה: VM $VMID כבר קיימת"; exit 1; fi
+if grep -rqs "addresses=$IP/" /var/lib/vz/snippets/ 2>/dev/null; then echo "אזהרה: ה-IP $IP כבר בשימוש באחד מקבצי ה-Ignition"; exit 1; fi
+if grep -rqs "addresses%3D$IP%2F" /var/lib/vz/snippets/ 2>/dev/null; then echo "עצירה: ה-IP $IP כבר בשימוש באחד מקבצי ה-Ignition"; exit 1; fi
+
+#===סיסמה למשתמש core===
+read -r -s -p "הקלד סיסמה למשתמש core: " PW; echo
+HASH=$(printf '%s' "$PW" | openssl passwd -6 -stdin)
+unset PW
+
+#===Ignition עם IP משלה===
+python3 - "$(cat $PUB)" "$HASH" "$IP" > "$SNIP" <<'PY'
+import sys, json, urllib.parse
+key, pw, ip = sys.argv[1], sys.argv[2], sys.argv[3]
+nm = f"""[connection]
+id=ens18
+type=ethernet
+interface-name=ens18
+
+[ipv4]
+method=manual
+addresses={ip}/24
+gateway=10.10.10.1
+dns=8.8.8.8;
+
+[ipv6]
+method=disabled
+"""
+print(json.dumps({
+    "ignition": {"version": "3.4.0"},
+    "passwd": {"users": [{"name": "core", "passwordHash": pw, "sshAuthorizedKeys": [key]}]},
+    "storage": {"files": [{
+        "path": "/etc/NetworkManager/system-connections/ens18.nmconnection",
+        "mode": 384, "overwrite": True,
+        "contents": {"source": "data:," + urllib.parse.quote(nm)}
+    }]}
+}, indent=2))
+PY
+chmod 600 "$SNIP"
+
+#===שכפול מלא (המכונה לא תלויה בתבנית)===
+qm clone $TID $VMID --name "$NAME" --full 1
+qm disk resize $VMID scsi0 20G
+qm set $VMID --cicustom vendor=local:snippets/fcos-$VMID.ign
+qm start $VMID
+echo "VM $VMID ($NAME) עלתה. התחברות:"
+echo "ssh -i /root/.ssh/id_ed25519-proxmax-vm core@$IP"
+SCRIPT
+chmod +x /root/fcos-clone.sh
+
+#===סיכום===
+qm config $TID
+echo "הכל הסתיים"
+EOF
+
+#===איך משכפלים מכונה חדשה (ב-Shell של Proxmox)===
+#   /root/fcos-clone.sh 1201 fcos2 10.10.10.41
+#כל מכונה צריכה ID משלה, שם משלה ו-IP משלו. לכתובת 10.10.10.40 כבר משתמשת 1200.
+#
+#===איך מוחקים שכפול===
+#   qm stop 1201; qm destroy 1201 --purge; rm -f /var/lib/vz/snippets/fcos-1201.ign
+#
+#===שים לב===
+#אל תפעיל את התבנית 9000 אף פעם. Proxmox גם לא יאפשר להפעיל אותה כל עוד היא תבנית.
+
+
+

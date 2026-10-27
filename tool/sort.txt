@@ -1,0 +1,30 @@
+# sort
+sort
+
+#upside down
+ sort -r
+ 
+ #to nambers
+ sort -n
+ 
+ #to date 
+ sort -M
+ 
+ #מתעלם מהמרווחים המובילים והשורות הריקות.
+ 
+ sort -b
+ 
+ 
+#למיין לפי העמודה השנייה
+sort -n -k 2,2 file.txt
+
+#דוגמה (למיין לפי עמודה 3, ואז לפי עמודה 2):
+
+sort -k 3,3 -k 2,2 file.txt
+
+#-t מפריד את הערכים בתו מסוים # 
+sort -t',' -k 2,2 file.txt
+
+#מסנן תוצאות כפולות ומחזיר רק את הערכים הייחודיים
+
+sort -u file.txt

@@ -1,0 +1,11 @@
+
+#to install 
+
+sudo apt install traceroute -y
+
+
+traceroute -T -p 443 <domain>
+
+
+
+#brew install tcptraceroute

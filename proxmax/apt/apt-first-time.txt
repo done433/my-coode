@@ -1,0 +1,49 @@
+#===Fix And Organize Proxmox 9 APT Repositories (No Subscription)===
+#Run as root on the Proxmox host/VM
+
+#===STEP 1: Find Any File Still Pointing To The Paid enterprise Repo===
+#These files cause the 401 Unauthorized errors
+grep -rl 'enterprise.proxmox.com' /etc/apt/sources.list.d/ /etc/apt/sources.list 2>/dev/null
+
+#===STEP 2: Disable Every enterprise Source Reliably===
+#For deb822 .sources files: force Enabled: false (add the line if it is missing)
+for f in $(grep -rl 'enterprise.proxmox.com' /etc/apt/sources.list.d/*.sources 2>/dev/null); do
+  if grep -q '^Enabled:' "$f"; then
+    sed -i 's/^Enabled:.*/Enabled: false/' "$f"
+  else
+    echo "Enabled: false" >> "$f"
+  fi
+done
+#For old-style .list files: comment out deb lines pointing to enterprise
+for f in $(grep -rl 'enterprise.proxmox.com' /etc/apt/sources.list.d/*.list /etc/apt/sources.list 2>/dev/null); do
+  sed -i '/enterprise.proxmox.com/s/^deb/#deb/' "$f"
+done
+
+#===STEP 3: Add The FREE no-subscription PVE Repo (deb822 for Proxmox 9 / Trixie)===
+cat > /etc/apt/sources.list.d/pve-no-subscription.sources << 'EOF'
+Types: deb
+URIs: http://download.proxmox.com/debian/pve
+Suites: trixie
+Components: pve-no-subscription
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+EOF
+
+#===STEP 4: Add The FREE no-subscription Ceph Repo (prevents warnings)===
+cat > /etc/apt/sources.list.d/ceph.sources << 'EOF'
+Types: deb
+URIs: http://download.proxmox.com/debian/ceph-squid
+Suites: trixie
+Components: no-subscription
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+EOF
+
+#===STEP 5: Verify No ENABLED Source Still Points To enterprise===
+#Any remaining lines should be commented (#deb) or under "Enabled: false"
+grep -rn 'enterprise.proxmox.com' /etc/apt/sources.list.d/ /etc/apt/sources.list 2>/dev/null
+
+#===STEP 6: Refresh Package Lists (should be clean, no 401 errors)===
+apt update
+
+#===STEP 7 (optional): Upgrade All Packages===
+#Uncomment to run the full upgrade
+#apt full-upgrade -y

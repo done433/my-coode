@@ -1,0 +1,9 @@
+# ~/.config/autostart/kitty.desktop 
+[Desktop Entry]
+Type=Application
+Name=kitty
+Exec=/usr/bin/kitty
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Comment=Open Kitty on login 

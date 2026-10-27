@@ -1,0 +1,10 @@
+sudo apt update
+
+# התקנת הכלי
+sudo apt install redshift redshift-gtk
+
+# הפעלה מיידית (מסך חם/צהוב)
+redshift -O 3500
+
+# החזרה למצב רגיל אם צריך
+redshift -x

@@ -1,0 +1,8 @@
+
+sudo apt install webapp-manager
+
+#לחפש בטפיט אפליקציות 
+Web App 
+
+#add url 
+https://claude.ai/new?incognito

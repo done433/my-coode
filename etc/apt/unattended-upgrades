@@ -1,0 +1,102 @@
+sduo apt install unattended-upgrades apt-listchanges powermgmt-base  -y
+
+
+/etc/apt/apt.conf.d/20auto-upgrades
+
+
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Download-Upgradeable-Packages "1";
+
+
+
+
+
+
+
+
+
+
+/etc/apt/apt.conf.d/50unattended-upgrades
+
+
+
+Unattended-Upgrade::Origins-Pattern {
+	// אפשר את כל מקורות Parrot (לא לדביין כדי להימנע מערבוב)
+	"o=Parrot";
+	"origin=Parrot";
+	"o=Parrot,a=parrot6";
+	// אם תרצה גם דביאן, הוסף בזהירות שורות נוספות – אבל ב-Parrot מומלץ Parrot בלבד.
+};
+
+// לא חוסמים חבילות
+Unattended-Upgrade::Package-Blacklist {};
+
+// לתקן dpkg תקוע אוטומטית
+Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+
+// לרוץ כרגיל (לא רק בכיבוי)
+Unattended-Upgrade::InstallOnShutdown "false";
+Unattended-Upgrade::MinimalSteps "false";
+
+// הסרת ליבות וחבילות לא נחוצות
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+// 周— אוטומציה יומית מלאה
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::AutocleanInterval "1";
+APT::Periodic::CleanInterval "1";
+
+// לוגים ורעש שימושי
+Unattended-Upgrade::SyslogEnable "true";
+Unattended-Upgrade::SyslogFacility "daemon";
+Unattended-Upgrade::Verbose "true";
+Unattended-Upgrade::Debug "false";
+
+// בלי הגבלות חשמל/רשת
+Unattended-Upgrade::OnlyOnACPower "false";
+Unattended-Upgrade::Skip-Updates-On-Metered-Connections "false";
+
+// ריבוט אוטומטי כשצריך
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+
+
+
+
+systemctl enable unattended-upgrades
+systemctl start unattended-upgrades
+
+
+sudo systemctl restart unattended-upgrades
+
+
+
+# לבדוק שהטיימר פעיל (חשוב!)
+systemctl list-timers | grep apt
+
+systemctl enable apt-daily.timer
+systemctl enable apt-daily-upgrade.timer
+
+
+#to test if whork 
+sudo unattended-upgrades --dry-run --debug
+
+#בדיקה ידנית מלאה
+unattended-upgrades --debug
+
+
+sudo dpkg-reconfigure unattended-upgrades
+
+#sudo dpkg-reconfigure --priority=low unattended-upgrades
+
+#run now
+sudo unattended-upgrade -d
+
+sudo cat  /var/log/unattended-upgrades/unattended-upgrades-shutdown.log

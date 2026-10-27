@@ -1,0 +1,13 @@
+rpm-ostree update
+
+rpm-ostree upgrade
+
+
+
+
+#swich distro
+sudo rpm-ostree rebase fedora:fedora/44/x86_64/silverblue
+
+
+#save lier
+sudo ostree admin pin 0

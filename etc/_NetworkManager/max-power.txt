@@ -1,0 +1,32 @@
+
+#to check
+iw dev wlp0s20f3 get power_save
+
+#to poweroff 
+sudo iw dev wlp0s20f3 set power_save off
+
+#for alweys
+
+sudo mkdir -p /etc/NetworkManager/conf.d
+sudo nano /etc/NetworkManager/conf.d/wifi-powersave.conf
+
+
+
+[connection]
+wifi.powersave = 2
+
+
+
+
+sudo systemctl restart NetworkManager
+
+
+
+
+
+#to check agen 
+iw dev wlp0s20f3 get power_save
+
+ 
+
+

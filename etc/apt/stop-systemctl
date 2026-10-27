@@ -1,0 +1,39 @@
+sudo nano /usr/sbin/policy-rc.d 
+  
+#!/bin/sh
+exit 101 
+
+
+
+sudo chmod +x /usr/sbin/policy-rc.d
+
+
+
+sudo mkdir -p /etc/systemd/system-preset
+
+sudo nano  /etc/systemd/system-preset/00-local.preset 
+disable *
+
+sudo chmod +x /etc/systemd/system-preset/00-local.preset
+
+
+
+#to check
+systemd-analyze cat-config systemd/system-preset
+
+
+
+
+#to stop systemctl --user
+
+sudo mkdir -p /etc/systemd/user-preset
+
+echo "disable *" | sudo tee /etc/systemd/user-preset/00-local.preset
+
+
+
+
+#relod chinch
+sudo systemctl daemon-reload
+
+systemctl --user daemon-reload

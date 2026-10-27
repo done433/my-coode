@@ -1,0 +1,8 @@
+sudo dnf install dnf-automatic -y
+
+sudo cp /usr/share/dnf5/dnf5-plugins/automatic.conf   /etc/dnf/automatic.conf
+
+sudo dnf updateinfo summary
+
+sudo systemctl enable --now dnf-automatic.timer
+

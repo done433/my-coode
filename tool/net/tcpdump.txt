@@ -1,0 +1,4 @@
+
+sudo apt install tcpdump
+
+sudo tcpdump -i eth0

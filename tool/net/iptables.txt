@@ -1,0 +1,77 @@
+
+
+#to see all
+
+sudo iptables -L -n -v
+
+cat /etc/nftables.conf
+
+
+
+
+
+
+
+# מחיקת כל החוקים הקיימים בטבלאות של iptables
+sudo iptables -F
+sudo iptables -X
+sudo iptables -t nat -F
+sudo iptables -t nat -X
+sudo iptables -t mangle -F
+sudo iptables -t mangle -X
+sudo iptables -t raw -F
+sudo iptables -t raw -X
+
+
+
+
+
+
+
+################################################################################
+#to see rools
+sudo nft list ruleset
+
+
+#מציג רק את שמות הטבלאו
+sudo nft list tables  
+
+#מציג רק את חוקי הסינון של ה-IP
+sudo nft list table ip filter
+
+
+----------------------------------------------------------------------------------
+
+# מחיקת טבלת הסינון של IPv6
+sudo nft delete table ip6 filter
+
+# מחיקת טבלת ה-NAT של IPv6
+sudo nft delete table ip6 nat
+
+# מחיקת טבלת ה-Mangle של IPv6
+sudo nft delete table ip6 mangle
+
+
+
+
+sudo nft list ruleset
+
+##################################################################################
+
+sudo ebtables -L 2>/dev/null
+sudo arptables -L 2>/dev/null
+##################################################################################
+
+
+
+# עצירה וביטול של שירות ה-nftables הקבוע במערכת
+sudo systemctl disable --now nftables
+
+# עצירה וביטול של שירותי iptables קבועים (במידה והותקנו כלים כמו iptables-persistent)
+sudo systemctl disable --now iptables-persistent 2>/dev/null
+sudo systemctl disable --now netfilter-persistent 2>/dev/null
+
+
+
+sudo systemctl restart nftables && sudo systemctl restart NetworkManager && sudo systemctl restart docker libvirtd 2>/dev/null && sudo ufw reload
+

@@ -1,0 +1,10 @@
+
+#update
+pveupdate
+
+#upgrade
+pveupgrade
+
+
+#
+pveam update

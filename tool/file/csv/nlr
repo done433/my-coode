@@ -1,0 +1,4 @@
+
+mlr --icsv --ojson --no-jvstack  cat  <file.csv>
+
+mlr --icsv --ojson cat <file.csv>

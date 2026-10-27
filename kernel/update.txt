@@ -1,0 +1,24 @@
+#to se kernel not use
+dpkg -l | awk '/linux-image|linux-modules/ {print $2}' | grep -v "$(uname -r)"
+
+dpkg -l | grep -E 'linux-image|linux-headers|linux-modules'
+
+#to see spice is take 
+du -sh /lib/modules/*
+
+
+#to remove kernels not use
+dpkg -l | awk '$1=="ii" && $2 ~ /^linux-image-[0-9]/ {print $2}' | grep -Fv "$(uname -r)" | xargs -r sudo apt purge -y
+
+current="$(uname -r)"; current="${current%-amd64}"; dpkg -l | awk '$1=="ii" && $2 ~ /^linux-(image|headers)-[0-9]/ {print $2}' | grep -Fv "$current"  |  xargs -r sudo dpkg --purge
+
+
+
+
+#tol to remoove old kernel
+sudo apt install byobu
+sudo purge-old-kernels
+
+byobu-enable
+byobu-disable
+byobu

@@ -1,0 +1,15 @@
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
+
+sudo systemctl disable systemd-networkd.service
+sudo systemctl stop systemd-networkd.service
+sudo systemctl mask systemd-networkd.service
+
+sudo systemctl disable systemd-networkd.socket
+sudo systemctl stop systemd-networkd.socket
+sudo systemctl mask systemd-networkd.socket
+
+
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+sudo systemctl mask systemd-resolved

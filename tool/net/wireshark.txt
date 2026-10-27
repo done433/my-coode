@@ -1,0 +1,7 @@
+sudo apt update
+sudo apt install wireshark tshark -y
+
+sudo usermod -aG wireshark $USER
+
+sudo apt install termshark -y
+

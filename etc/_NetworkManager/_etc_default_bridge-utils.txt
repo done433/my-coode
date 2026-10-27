@@ -1,0 +1,21 @@
+ # Shoud we add the ports of a bridge to the bridge when they are hotplugged?
+BRIDGE_HOTPLUG=no
+# Should we also disable link-local IPv6 on physical interfaces of vlan ports?
+BRIDGE_DISABLE_LINKLOCAL_IPV6_ALSO_PHYS=no
+
+
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+sudo systemctl restart networking

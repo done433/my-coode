@@ -1,0 +1,44 @@
+flatpak install flathub org.thonny.Thonny
+
+
+pip install mpremote esptool
+
+ls /dev/ttyACM*
+
+
+
+sudo usermod -aG dialout $USER
+sudo usermod -a -G tty $USER
+
+
+
+#to see ditels
+esptool.py --port /dev/ttyACM0 flash_id
+
+
+
+udevadm info -a -n /dev/ttyACM0
+
+
+####################
+#to run python on esp32
+
+#install tool
+pip install mpremote
+
+#to see all dev
+mpremote repl
+
+#to copy file to esp main.py
+mpremote cp main.py :main.py
+
+
+#to run script
+mpremote connect /dev/ttyACM0 run chek-time.py
+
+#to chek flash mamaory spice
+mpremote connect /dev/ttyACM0 exec "import os; s=os.statvfs('/'); print('Total:', s[0]*s[2]//1024, 'KB'); print('Free:', s[0]*s[3]//1024, 'KB')"
+
+#to delite file 
+mpremote connect /dev/ttyACM0 exec "import os; os.remove('/<file.txt>'); print('deleted')"
+

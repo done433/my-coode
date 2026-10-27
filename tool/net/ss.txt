@@ -1,0 +1,59 @@
+
+
+
+sudo apt install -y net-tools
+sudo nethogs
+
+
+
+
+
+netstat -tulpn | grep :80
+
+
+watch -n 1 'ss -ti | grep ssh'
+
+
+
+
+ss -tulnp
+watch -n 1 'ss -tulnp'
+
+
+# תצוגה אלטרנטיבית (יותר מודרנית)
+ss -tunap
+
+# פירוט לפי TCP בלבד
+ss -tanp
+
+# פירוט לפי UDP בלבד
+ss -uanp
+
+
+#מי במחשב שלך מחובר לאינטרנט עכשיו
+ss -tunap
+
+# לראות רק חיבורים פעילים (ESTABLISHED)
+ss -tanp | grep ESTAB
+
+
+
+ss -tulpen   
+
+
+netstat -tuln                  # הצגת שירותים רשת פועלים (כולל פורטים)
+ss -tuln        
+
+sudo ss -tnp 
+sudo lsof -i -n -P
+
+
+ss -tulnp
+
+netstat -tulnp
+
+
+
+netstat -an | grep ':80' 
+
+

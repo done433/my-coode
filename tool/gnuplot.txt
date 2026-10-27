@@ -1,0 +1,81 @@
+sudo apt install gnuplot-x11
+sudo apt install gnuplot-nox
+sudo apt install gnuplot
+
+
+
+nano nq-data.sh
+
+
+
+
+
+
+
+#!/bin/bash
+
+DATA="/tmp/nq-live.dat"
+
+touch "$DATA"
+
+while true; do
+
+PRICE=$(curl -s \
+-H "User-Agent: Mozilla/5.0" \
+"https://query1.finance.yahoo.com/v8/finance/chart/NQ=F" \
+| jq -r '.chart.result[0].meta.regularMarketPrice')
+
+echo "$(date +%s) $PRICE" >> "$DATA"
+
+tail -120 "$DATA" > "$DATA.tmp"
+mv "$DATA.tmp" "$DATA"
+
+sleep 5
+
+done
+
+
+
+
+
+chmod +x nq-data.sh
+
+
+
+nano nq-plot.gnu
+
+
+
+
+
+
+set terminal x11
+set title "NQ=F LIVE"
+set grid
+set xdata time
+set timefmt "%s"
+set format x "%H:%M:%S"
+
+while (1) {
+    plot "/tmp/nq-live.dat" using 1:2 with lines title "NQ=F"
+    pause 1
+}
+
+
+
+
+
+
+
+
+./nq-data.sh
+
+gnuplot nq-plot.gnu
+
+
+
+
+
+pip  install termgraph
+
+

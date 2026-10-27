@@ -1,0 +1,26 @@
+sudo adduser newuser
+
+sudo usermod -aG sudo newuser
+
+
+#1️ מחיקת משתמש כולל home directory
+
+sudo deluser --remove-home olduser
+
+#מחיקת המשתמש מקבוצות נוספות
+
+getent passwd olduser
+getent group | grep olduser
+
+
+
+groups=$(id -nG qwe)
+sudo usermod -aG $(echo $groups | tr ' ' ',') asd
+
+##
+
+#הסרת המשתמש מקבוצת ה-Sudo
+sudo gpasswd -d <name> sudo
+
+#מוחק  את  המשתמש  מכל  הקבוצות  האחרות  ומשאיר אותו רק אצלו
+sudo usermod -G <name> <name>

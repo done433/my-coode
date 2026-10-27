@@ -1,0 +1,4 @@
+#tool to  see how hold file
+
+fuser <file name>
+

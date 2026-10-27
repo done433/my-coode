@@ -1,0 +1,20 @@
+#install ip command
+sudo apt install -y iproute2
+
+ip route
+
+ip -br addr
+
+#to check hwo  is get  out
+ip route get 1.1.1.1
+
+ip route show default
+
+ip rule
+
+ip route show
+
+
+#to see ip gatway and network
+dev=$(ip -4 route show default | awk 'NR==1{print $5}'); ip -4 addr show dev "$dev" | awk '/inet /{split($2,a,"/"); print "IP:      "a[1]; exit}'; ip -4 route show dev "$dev" proto kernel scope link | awk 'NR==1{print "Network: "$1}'; ip -4 route show default dev "$dev" | awk 'NR==1{print "Gateway: "$3}'
+

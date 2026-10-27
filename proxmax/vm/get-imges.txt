@@ -1,0 +1,4 @@
+
+ wget -c https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-nocloud-amd64.qcow2

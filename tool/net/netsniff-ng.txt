@@ -1,0 +1,200 @@
+sudo apt install -y netsniff-ng geoip-bin
+
+sudo mkdir -p /usr/share/netsniff-ng
+
+
+# 1. למחוק את הקובץ הריק
+sudo rm -f /usr/share/netsniff-ng/country4.dat.gz
+
+# 2. להוריד את מאגר ה-GeoIP Legacy
+sudo wget -O /usr/share/netsniff-ng/country4.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIP.dat.gz
+
+# 3. לבדוק שהקובץ באמת הורד
+ls -lh /usr/share/netsniff-ng/country4.dat.gz
+
+# 4. לבדוק שה-GZIP תקין
+gzip -t /usr/share/netsniff-ng/country4.dat.gz && echo "GZIP OK"
+
+# 5. להפעיל
+sudo flowtop
+
+
+
+
+
+
+##########################################################
+
+# למחוק את הקובץ הדחוס הנוכחי
+sudo rm -f /usr/share/netsniff-ng/country4.dat.gz
+
+# Country IPv4
+wget -O /tmp/GeoIP.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIP.dat.gz
+
+# City IPv4
+wget -O /tmp/GeoIPCity.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPCity.dat.gz
+
+# לפתוח אותם
+gunzip -f /tmp/GeoIP.dat.gz
+gunzip -f /tmp/GeoIPCity.dat.gz
+
+# לשים בשמות שה-flowtop שלך מצפה להם
+sudo mv /tmp/GeoIP.dat /usr/share/netsniff-ng/country4.dat
+sudo mv /tmp/GeoIPCity.dat /usr/share/netsniff-ng/city4.dat
+
+# לבדוק
+ls -lh /usr/share/netsniff-ng/
+
+# להפעיל
+sudo flowtop
+
+
+################################################
+wget -O /tmp/GeoIPv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPv6.dat.gz
+
+wget -O /tmp/GeoIPCityv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPCityv6.dat.gz
+
+gunzip -f /tmp/GeoIPv6.dat.gz
+gunzip -f /tmp/GeoIPCityv6.dat.gz
+
+sudo mv /tmp/GeoIPv6.dat /usr/share/netsniff-ng/country6.dat
+sudo mv /tmp/GeoIPCityv6.dat /usr/share/netsniff-ng/city6.dat
+
+ls -lh /usr/share/netsniff-ng/
+
+
+
+wget -O /tmp/GeoIPASNum.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPASNum.dat.gz
+
+wget -O /tmp/GeoIPASNumv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPASNumv6.dat.gz
+
+gunzip -f /tmp/GeoIPASNum.dat.gz
+gunzip -f /tmp/GeoIPASNumv6.dat.gz
+
+sudo mv /tmp/GeoIPASNum.dat /usr/share/netsniff-ng/as4.dat
+sudo mv /tmp/GeoIPASNumv6.dat /usr/share/netsniff-ng/as6.dat
+
+ls -lh /usr/share/netsniff-ng/
+
+sudo mv /usr/share/netsniff-ng/as4.dat /usr/share/netsniff-ng/asname4.dat
+sudo mv /usr/share/netsniff-ng/as6.dat /usr/share/netsniff-ng/asname6.dat
+
+sudo chown root:root /usr/share/netsniff-ng/asname*.dat
+sudo chmod 644 /usr/share/netsniff-ng/asname*.dat
+
+ls -lh /usr/share/netsniff-ng/
+
+sudo flowtop
+
+##################################################
+# ============================================================
+# flowtop 0.6.9 — התקנת GeoIP מלאה ב-Debian
+# ============================================================
+
+
+
+
+# 3. הורדת GeoIP Legacy — IPv4 Country
+wget -O /tmp/GeoIP.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIP.dat.gz
+
+# 4. הורדת GeoIP Legacy — IPv4 City
+wget -O /tmp/GeoIPCity.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPCity.dat.gz
+
+# 5. הורדת GeoIP Legacy — IPv6 Country
+wget -O /tmp/GeoIPv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPv6.dat.gz
+
+# 6. הורדת GeoIP Legacy — IPv6 City
+wget -O /tmp/GeoIPCityv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPCityv6.dat.gz
+
+# 7. הורדת GeoIP Legacy — IPv4 AS
+wget -O /tmp/GeoIPASNum.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPASNum.dat.gz
+
+# 8. הורדת GeoIP Legacy — IPv6 AS
+wget -O /tmp/GeoIPASNumv6.dat.gz \
+  https://mailfud.org/geoip-legacy/GeoIPASNumv6.dat.gz
+
+# 9. חילוץ כל הקבצים
+gunzip -f /tmp/GeoIP.dat.gz
+gunzip -f /tmp/GeoIPCity.dat.gz
+gunzip -f /tmp/GeoIPv6.dat.gz
+gunzip -f /tmp/GeoIPCityv6.dat.gz
+gunzip -f /tmp/GeoIPASNum.dat.gz
+gunzip -f /tmp/GeoIPASNumv6.dat.gz
+
+# 10. העברה לשמות המדויקים ש-flowtop 0.6.9 מחפש
+sudo mv /tmp/GeoIP.dat \
+  /usr/share/netsniff-ng/country4.dat
+
+sudo mv /tmp/GeoIPCity.dat \
+  /usr/share/netsniff-ng/city4.dat
+
+sudo mv /tmp/GeoIPv6.dat \
+  /usr/share/netsniff-ng/country6.dat
+
+sudo mv /tmp/GeoIPCityv6.dat \
+  /usr/share/netsniff-ng/city6.dat
+
+sudo mv /tmp/GeoIPASNum.dat \
+  /usr/share/netsniff-ng/asname4.dat
+
+sudo mv /tmp/GeoIPASNumv6.dat \
+  /usr/share/netsniff-ng/asname6.dat
+
+# 11. הרשאות
+sudo chown root:root /usr/share/netsniff-ng/*.dat
+sudo chmod 644 /usr/share/netsniff-ng/*.dat
+
+# 12. בדיקה
+ls -lh /usr/share/netsniff-ng/
+
+# 13. בדיקת AS
+geoiplookup -f /usr/share/netsniff-ng/asname4.dat 8.8.8.8
+
+# 14. הפעלה
+sudo flowtop
+
+
+
+######################################################
+######################################################
+######################################################
+
+sudo mkdir -p /usr/share/netsniff-ng
+
+wget -O /tmp/GeoIP.dat.gz https://mailfud.org/geoip-legacy/GeoIP.dat.gz
+wget -O /tmp/GeoIPCity.dat.gz https://mailfud.org/geoip-legacy/GeoIPCity.dat.gz
+wget -O /tmp/GeoIPv6.dat.gz https://mailfud.org/geoip-legacy/GeoIPv6.dat.gz
+wget -O /tmp/GeoIPCityv6.dat.gz https://mailfud.org/geoip-legacy/GeoIPCityv6.dat.gz
+wget -O /tmp/GeoIPASNum.dat.gz https://mailfud.org/geoip-legacy/GeoIPASNum.dat.gz
+wget -O /tmp/GeoIPASNumv6.dat.gz https://mailfud.org/geoip-legacy/GeoIPASNumv6.dat.gz
+
+gunzip -f /tmp/GeoIP.dat.gz /tmp/GeoIPCity.dat.gz /tmp/GeoIPv6.dat.gz /tmp/GeoIPCityv6.dat.gz /tmp/GeoIPASNum.dat.gz /tmp/GeoIPASNumv6.dat.gz
+
+sudo mv /tmp/GeoIP.dat /usr/share/netsniff-ng/country4.dat
+sudo mv /tmp/GeoIPCity.dat /usr/share/netsniff-ng/city4.dat
+sudo mv /tmp/GeoIPv6.dat /usr/share/netsniff-ng/country6.dat
+sudo mv /tmp/GeoIPCityv6.dat /usr/share/netsniff-ng/city6.dat
+sudo mv /tmp/GeoIPASNum.dat /usr/share/netsniff-ng/asname4.dat
+sudo mv /tmp/GeoIPASNumv6.dat /usr/share/netsniff-ng/asname6.dat
+
+sudo chown root:root /usr/share/netsniff-ng/*.dat
+sudo chmod 644 /usr/share/netsniff-ng/*.dat
+
+sudo flowtop
+
+########################################################
+########################################################
+########################################################
+########################################################

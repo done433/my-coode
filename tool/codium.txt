@@ -1,0 +1,89 @@
+
+sudo apt install curl gpg -y
+
+
+
+curl -fsSL https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \                                        
+| gpg --dearmor \                               
+| sudo tee /usr/share/keyrings/vscodium-archive-keyring.gpg > /dev/null
+
+
+curl -fsSL https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/vscodium-archive-keyring.gpg > /dev/null 
+
+
+
+
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main" \
+| sudo tee /etc/apt/sources.list.d/vscodium.list
+
+
+sudo apt update
+
+
+sudo apt install codium -y
+
+
+codium --install-extension ms-python.python
+
+#antropic
+
+
+com.vscodium.codium --install-extension anthropic.claude-code
+
+#for  python
+pip install black 
+
+#to esp32
+codium --install-extension LordImmaculate.platformio-ide
+
+#to esp-micropython
+flatpak install flathub org.thonny.Thonny
+
+#to python
+flatpak install flathub com.jetbrains.PyCharm-Community
+
+
+
+
+
+#sitings from  apt install 
+nano ~/.config/VSCodium/User/settings.json
+
+#sitings from flatpak install 
+nano ~/.var/app/com.vscodium.codium/config/VSCodium/User/settings.json
+
+
+
+
+
+
+{
+    "files.autoSave": "onWindowChange",
+    "tabnine.experimentalAutoImports": true,
+    "git.autofetch": true
+
+
+
+
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.wordWrap": "on",
+    "workbench.editor.enablePreview": false,
+    "terminal.integrated.copyOnSelection": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "editor.rulers": [88]
+    }
+
+}
+
+

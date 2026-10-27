@@ -1,0 +1,36 @@
+ssh -o HostKeyAlgorithms=+ssh-rsa root@192.168.8.1
+
+
+
+
+
+
+
+
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+AuthorizedKeysFile	.ssh/authorized_keys
+Subsystem	sftp	/usr/lib/sftp-server
+X11Forwarding no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+AuthenticationMethods publickey
+
+
+
+
+
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+
+echo "<public-key>" >> .ssh/authorized_keys
+

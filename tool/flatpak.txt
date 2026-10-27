@@ -1,0 +1,159 @@
+
+
+sudo apt install flatpak
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+
+nano ~/.bashrc
+export XDG_DATA_DIRS=/var/lib/flatpak/exports/share:$XDG_DATA_DIRS
+
+
+flatpak remotes
+
+
+flatpak update
+
+sudo apt install gnome-software-plugin-flatpak
+flatpak install flathub md.obsidian.Obsidian
+
+
+flatpak install flathub chat.simplex.simplex
+flatpak install flathub org.cryptomator.Cryptomator
+flatpak install flathub com.github.Eloston.UngoogledChromium
+flatpak install io.github.shonebinu.Brief 
+flatpak install -y flathub com.vscodium.codium
+flatpak install flathub org.kde.ktouch  
+flatpak install flathub com.bitwarden.desktop 
+flatpak install flathub com.protonvpn.www 
+flatpak install flathub  dev.ters.LocalTranslate 
+flatpak install flathub  org.localsend.localsend_app
+flatpak install flathub   io.github.shonebinu.Brief
+flatpak install flathub com.belmoussaoui.Authenticator
+flatpak install flathub  com.github.qarmin.czkawka  
+################################################
+flatpak install flathub  org.chromium.Chromium
+flatpak install flathub dev.zed.Zed
+flatpak install flathub com.github.qarmin.czkawka
+flatpak install flathub app.zen_browser.zen
+
+
+flatpak install flathub 
+flatpak install flathub  com.github.fabiocolacio.marker
+flatpak install flathub com.github.tchx84.Flatseal
+flatpak install flathub dev.ters.LocalTranslate
+flatpak install flathub dev.zed.Zed
+flatpak install flathub io.github.ungoogled_software.ungoogled_chromium
+flatpak install flathub md.obsidian.Obsidian
+flatpak install flathub org.gnome.World.PikaBackup
+flatpak install flathub org.kde.falkon
+flatpak install flathub org.localsend.localsend_app
+flatpak install flathub org.telegram.desktop
+flatpak install flathub org.thonny.Thonny
+flatpak install flathub  org.torproject.torbrowser-launcher
+
+
+
+#IDE  for  esp32
+flatpak install flathub org.thonny.Thonny
+
+#web app
+flatpak install  net.codelogistics.webapps
+
+
+
+
+
+#לראת כל ההרשאות
+flatpak info --show-permissions org.chromium.Chromium
+#לראות השאות
+sudo flatpak override --show org.chromium.Chromium
+#הקשחות
+sudo flatpak override --nofilesystem=home org.chromium.Chromium
+sudo flatpak override --nodevice=all org.chromium.Chromium
+sudo flatpak override --nosocket=cups org.chromium.Chromium
+sudo flatpak override --nosocket=wayland org.chromium.Chromium
+sudo flatpak override --unshare=ipc org.chromium.Chromium
+sudo flatpak override --no-talk-name=org.freedesktop.secrets org.chromium.Chromium
+sudo flatpak override --no-talk-name=org.kde.kwalletd5 org.chromium.Chromium
+sudo flatpak override --no-talk-name=org.kde.kwalletd6 org.chromium.Chromium
+sudo flatpak override --no-talk-name=org.freedesktop.Avahi org.chromium.Chromium
+sudo flatpak override --no-talk-name=org.bluez org.chromium.Chromium
+
+
+#ביטול ההקשחות
+sudo flatpak override --share=ipc org.chromium.Chromium
+sudo flatpak override --device=dri org.chromium.Chromium
+sudo flatpak override --socket=wayland org.chromium.Chromium
+sudo flatpak override --talk-name=org.freedesktop.secrets org.chromium.Chromium
+sudo flatpak override --filesystem=home org.chromium.Chromium
+sudo flatpak override --device=dri --nodevice=all org.chromium.Chromium
+sudo flatpak override --device=dri --nodevice=all org.chromium.Chromium
+
+#איפוס
+sudo flatpak override --reset org.chromium.Chromium
+
+#מחייקה 
+sudo rm -rf ~/.var/app/org.chromium.Chromium
+rm -rf ~/.var/app/org.chromium.Chromium
+
+flatpak uninstall org.chromium.Chromium
+
+flatpak uninstall --unused
+###flatpak install https://dl.flathub.org/repo/appstream/com.vscodium.codium.flatpakref
++++++
+
+sudo aa-complain /etc/apparmor.d/flatpak
+
+
+
+#to see permission of app
+flatpak info --show-permissions <app name>
+
+
+
+
+
+#list app id
+flatpak list --app --columns=application
+
+
+##
+flatpak list --app --columns=application
+Application ID
+chat.simplex.simplex
+com.belmoussaoui.Authenticator
+com.bitwarden.desktop
+com.github.marktext.marktext
+com.github.qarmin.czkawka
+com.github.tchx84.Flatseal
+com.jetbrains.PyCharm-Community
+com.mattjakeman.ExtensionManager
+com.notesnook.Notesnook
+com.protonvpn.www
+com.vscodium.codium
+io.emeric.toolblex
+io.github.brunofin.Cohesion
+io.github.josephmawa.TextCompare
+io.github.shonebinu.Brief
+io.github.zingytomato.netpeek
+org.chromium.Chromium
+org.fedoraproject.MediaWriter
+org.gnome.Extensions
+org.gnome.Logs
+org.gnome.Loupe
+org.gnome.Maps
+org.gnome.NautilusPreviewer
+org.gnome.Papers
+org.gnome.TextEditor
+org.gnome.baobab
+org.gnome.clocks
+org.gnome.design.Lorem
+org.gnome.font-viewer
+org.gnome.gitlab.somas.Apostrophe
+org.kde.ghostwriter
+org.pvermeer.WebAppHub
+org.remmina.Remmina
+org.thonny.Thonny
+org.videolan.VLC
+studio.planetpeanut.Bobby

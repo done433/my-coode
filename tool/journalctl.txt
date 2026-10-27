@@ -1,0 +1,72 @@
+
+
+# 0) למחוק את כל הלוגים הישנים עכשיו (לפני ההגדרה החדשה)
+
+# =========================
+
+sudo journalctl --rotate
+
+sudo journalctl --vacuum-time=1s
+
+
+##לראות כמה לוגים יש כרגע 
+
+
+journalctl --disk-usage
+
+
+
+
+##
+
+
+
+
+#####
+sudo apt install gnome-logs -y
+
+gnome-logs
+
+
+##########
+
+journalctl -f
+
+journalctl -xe
+
+journalctl -p 3 -xb
+
+journalctl -b
+
+journalctl -u docker
+
+
+mintreport
+
+
+
+
+#לוגים של שירות ספציפי
+sudo journalctl -u sshd
+
+#לוגים בזמן אמת של שירות
+sudo journalctl -u sshd -f
+
+#לוגים מה-boot הנוכחי בלבד
+sudo journalctl -b
+
+#לוגים מ-boot קודם (לדוגמה boot שלפני האחרון)
+sudo journalctl -b -1
+
+#לוגים מטווח זמן
+sudo journalctl --since "2024-01-01 10:00:00" --until "2024-01-01 12:00:00"
+
+#לוגים של שעה האחרונה
+sudo journalctl --since "1 hour ago"
+
+#לוגים לפי רמת חומרה (emerg, alert, crit, err, warning, notice, info, debug)
+sudo journalctl -p err
+
+
+
+journalctl -b 0 | grep -i "cinnamon"

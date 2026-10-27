@@ -1,0 +1,11 @@
+brew install  bandwhich
+
+
+bandwhich -t  -s
+
+
+bandwhich -s
+
+
+sudo /home/linuxbrew/.linuxbrew/bin/bandwhich
+

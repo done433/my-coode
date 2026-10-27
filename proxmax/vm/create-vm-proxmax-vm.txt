@@ -1,0 +1,145 @@
+#===Check Nested Virtualization (AMD)===
+#Y or 1 = good. If empty, the module name or path differs
+cat /sys/module/kvm_amd/parameters/nested 2>/dev/null
+
+#===List Storages That Support DISK IMAGES===
+#Look here: you need a storage whose Content includes "images"
+pvesm status --content images
+#Full storage config for reference
+cat /etc/pve/storage.cfg
+
+#===List Available Network Bridges===
+#vmbr0 is the usual one
+ip -br link show | grep vmbr
+
+#===Editable Parameters===
+#VM id number
+VMID=7000
+#VM name
+VMNAME="PROX-TEST"
+#RAM in MB
+MEMORY=8192
+#CPU cores
+CORES=4
+#CPU sockets
+SOCKETS=1
+#New disk size in GB
+DISKSIZE=32
+#Network bridge (change if yours is not vmbr0)
+BRIDGE="vmbr0"
+#Installer ISO as a Proxmox storage reference (NOT a filesystem path)
+ISO="local:iso/proxmox-ve_9.2-1.iso"
+
+#===Auto-Pick The First Storage That Supports Images===
+#This avoids the "local-lvm does not exist" error
+STORAGE=$(pvesm status --content images | awk 'NR>1{print $1; exit}')
+#Show what was chosen; if this prints nothing, STOP and read the note below
+echo "Chosen storage for disk: $STORAGE"
+
+#===Destroy The Partial VM From The Failed Attempt===
+qm stop $VMID || true
+qm destroy $VMID --purge || true
+
+#===Create The VM (cpu=host required for nested virt)===
+qm create $VMID \
+  --name $VMNAME \
+  --memory $MEMORY \
+  --cores $CORES \
+  --sockets $SOCKETS \
+  --cpu host \
+  --net0 virtio,bridge=$BRIDGE \
+  --scsihw virtio-scsi-pci
+
+#===Create And Attach A Blank Disk On The Correct Storage===
+qm set $VMID --scsi0 ${STORAGE}:${DISKSIZE}
+
+#===Attach The Installer ISO As CD-ROM===
+qm set $VMID --ide2 ${ISO},media=cdrom
+
+#===Boot From CD First, Then Disk (quotes are mandatory)===
+qm set $VMID --boot "order=ide2;scsi0"
+
+#===Serial Console (optional, harmless)===
+qm set $VMID --serial0 socket
+
+#===Show Final Config===
+qm config $VMID
+
+#===Start The VM===
+qm start $VMID
+
+#===If echo above printed an EMPTY storage, run ONE of these instead===
+#Option A: enable images on the existing "local" directory storage, then rerun from Create step
+#pvesm set local --content images,iso,vztmpl,backup
+#Option B: if you have ZFS, the storage is usually called local-zfs; set STORAGE="local-zfs" manually
+
+
+
+
+
+##########################################################
+##########################################################
+
+#clone vm 
+TEMPLATEID=7000
+qm stop $TEMPLATEID || true
+qm template $TEMPLATEID
+
+#and Clone It
+NEWID=7001
+NEWNAME="prox-clone-01"
+
+qm clone $TEMPLATEID $NEWID --name $NEWNAME --full
+
+#start it
+qm start $NEWID
+
+
+
+
+
+
+
+
+#####################################################
+#####################################################
+
+systemctl enable --now serial-getty@ttyS0.service
+
+
+
+
+######################################################
+######################################################
+
+cp /etc/network/interfaces /etc/network/interfaces.bak
+
+#===STEP 3: Fix It — REPLACE "ens18" BELOW with the real name from STEP 1===
+#The key fix: the bridge-ports and the manual iface must use the REAL card name
+REALNIC="ens18"
+cat > /etc/network/interfaces << EOF
+auto lo
+iface lo inet loopback
+
+iface $REALNIC inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+        address 192.168.8.230/24
+        gateway 192.168.8.1
+        bridge-ports $REALNIC
+        bridge-stp off
+        bridge-fd 0
+
+source /etc/network/interfaces.d/*
+EOF
+
+#===STEP 4: Restart Networking===
+systemctl restart networking
+
+#===STEP 5: Verify The Bridge Came Up With An IP===
+ip -br addr show vmbr0
+ip route
+
+#===STEP 6: Test The Gateway===
+ping -c 3 192.168.8.1

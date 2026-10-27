@@ -1,0 +1,157 @@
+
+#בדוק שהתחביר תקין
+sshd -t
+
+
+echo $SSH_TTY
+echo $SSH_CLIENT
+
+
+
+#ליצור מפתח ציבורי ממפתח פרטי 
+
+ssh-keygen -y -f ~/.ssh/id_ed25519_restored > ~/.ssh/id_ed25519_restored.pub
+
+
+
+
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+chmod 600 ~/.ssh/authorized_keys
+#chmod 644 ~/.ssh/config
+chmod 600 ~/.ssh/config
+chmod 644 ~/.ssh/known_hosts
+
+
+
+
+
+###################################
+
+
+#to nake new  key
+ssh-keygen
+
+#to add key
+ssh-add ~/.ssh/id_ed25519
+
+#to se what add 
+ssh-add -l
+
+
+
+#(ssh-agent)
+eval "$(ssh-agent -s)"
+eval "$(ssh-agent -s)" >/dev/null
+
+#to eible ssh 127.0.0.1
+cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
+
+#ssh with spesipik file
+ssh -i ~/.ssh/id_ed25519 root@127.0.0.1
+
+#to cp file with ssh
+scp -r root@127.0.0.1:/root/1 ~/Downloads/
+
+#to send file to the web
+scp -r /path/to/local/folder test@test.rebex.net:/home/test/
+
+
+
+scp -r /path/to/your_folder asd@127.0.0.1:~/Desktop/
+
+rsync -avzP /path/to/your_folder asd@127.0.0.1:~/Desktop/
+
+
+sudo rsync -a /home/qwe/.ssh/ /root/.ssh/
+sudo chown -R root:root /root/.ssh
+sudo chmod 700 /root/.ssh
+sudo chmod 600 /root/.ssh/authorized_keys
+
+
+
+
+
+
+
+################################
+#to grafic ssh 
+nano /etc/ssh/sshd_cofig
+
+X11Forwarding yes
+X11DisplayOffset 10
+X11UseLocalhost yes
+Include /etc/ssh/sshd_config.d/*.conf
+KbdInteractiveAuthentication no
+UsePAM yes
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+AuthenticationMethods publickey
+
+AddressFamily inet
+
+
+
+
+
+sudo systemctl restart sshd
+
+ssh -X username@remote_host
+
+#ssh on kitty
+kitty +kitten ssh <hostname>@<ip>
+
+
+
+#failled
+lastb
+
+#secsess
+last
+
+last -i
+
+#key secsess
+sudo grep "Accepted publickey" /var/log/auth.log*
+
+#secsess
+sudo grep "Accepted" /var/log/auth.log*
+
+
+sudo grep -c "Failed password" /var/log/auth.log
+
+
+
+sudo grep "Failed password" /var/log/auth.log* | grep -oP 'from \K([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' | sort | uniq -c | sort -nr
+
+sudo grep "Accepted" /var/log/auth.log* | grep -oP 'from \K([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' | sort | uniq -c | sort -nr
+
+
+
+sudo grep "Failed password" /var/log/auth.log | grep -oE '[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}' | sort | uniq -c | sort -nr
+
+sudo grep "Accepted" /var/log/auth.log | grep -oE '[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}\.[0-3]?[0-9]{1,2}' | sort | uniq -c | sort -nr
+
+
+
+# 1. נעצור ונכבה לחלוטין את ה-Socket שמחזיק את פורט 22
+sudo systemctl stop ssh.socket
+sudo systemctl disable ssh.socket
+
+# 2. נבצע "מסכה" (Mask) לסוקט כדי שמערכת ההפעלה לא תוכל להעיר אותו בטעות מחדש
+sudo systemctl mask ssh.socket
+
+# 3. נעשה ריסטרט מלא לשירות ה-SSH הרגיל שקורא את קובץ ה-sshd_config
+sudo systemctl daemon-reload
+sudo systemctl restart ssh
+
+#remoove
+sudo apt remove --purge -y ssh ssh-import-id  openssh-sftp-server openssh-server openssh-client -y
+

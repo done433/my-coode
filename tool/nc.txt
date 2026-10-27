@@ -1,0 +1,18 @@
+
+sudo apt install netcat-openbsd
+
+nc -lvnp 8000
+
+echo "hello" | nc 127.0.0.1 8000
+
+
+#to  send file
+
+#in derectory of  file
+nc -l -p 8000 < stocks.db
+
+#to downlod the file
+nc 100.102.50.77 8000 > ~/Desktop/stocks.db
+
+
+

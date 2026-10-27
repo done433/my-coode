@@ -1,0 +1,68 @@
+
+
+sudo aria2c -c "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2" \
+  -d /var/lib/vz/template/cloud-images/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#in proxmax
+
+sudo nano  /var/lib/vz/snippets/debian-mirror.yaml
+
+#cloud-config
+write_files:
+  - path: /etc/apt/mirrors/debian.list
+    content: |
+      http://192.168.8.124/deb.debian.org/debian/
+  - path: /etc/apt/mirrors/debian-security.list
+    content: |
+      http://192.168.8.124/security.debian.org/debian-security/
+
+chpasswd:
+  list:
+    - root:$6$4G2laHqP2haTIMvL$KbnEtp7N8CdGznyS/f/X0/Dtr4ZqCGQt7vINKQG8G6p2D4gSFiJ1BwLlqa8DrqiQ3cTPFRfF1D8qW/No49yRl0
+  expire: false
+
+ssh_pwauth: true
+disable_root: false
+
+
+
+
+
+#in vm 
+
+echo "http://192.168.8.124/deb.debian.org/debian/" > /etc/apt/mirrors/debian.list
+echo "http://192.168.8.124/security.debian.org/debian-security/" > /etc/apt/mirrors/debian-security.list
+
+
+nano /etc/apt/sources.list.d/debian.sources
+
+
+Types: deb
+URIs: mirror+file:///etc/apt/mirrors/debian.list
+Suites: bookworm bookworm-updates
+Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: mirror+file:///etc/apt/mirrors/debian-security.list
+Suites: bookworm-security
+Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+
+
+apt update
+

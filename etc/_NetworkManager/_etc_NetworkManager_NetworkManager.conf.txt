@@ -1,0 +1,38 @@
+#/etc/NetworkManager/NetworkManager.conf
+[main]
+plugins=ifupdown,keyfile
+# אל תיצור פרופילים אוטומטית לממשקים חדשים
+no-auto-default=*
+# אל תתחבר לבד בלי אישור מפורש
+autoconnect=false
+
+[device]
+# Wi-Fi: MAC רנדומלי גם בסריקה וגם בזמן התחברות
+wifi.scan-rand-mac-address=yes
+wifi.cloned-mac-address=random
+# קווי/USB: גם הם יקבלו MAC רנדומלי כברירת מחדל
+ethernet.cloned-mac-address=random
+usb.cloned-mac-address=random
+# ברירת מחדל על כל התקן חדש
+match-device=*
+cloned-mac-address=random
+
+[connection]
+# IPv6 כבוי כברירת מחדל בכל חיבור חדש (כולל Wi-Fi)
+ipv6.method=ignore
+ipv6.ip6-privacy=0
+# אל תתחבר לבד לפרופילים חדשים
+#autoconnect=false
+
+wifi.cloned-mac-address=random
+ethernet.cloned-mac-address=random
+
+wifi.scan-rand-mac-address=yes
+
+
+[ifupdown]
+#managed=true
+
+
+[logging]
+level=OFF

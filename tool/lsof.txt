@@ -1,0 +1,10 @@
+
+#open file
+lsof +L1
+
+ # מצא קבצים פתוחים שקשורים לכלי מסוים
+lsof | grep <tool_name>      
+
+
+
+sudo lsof -i -n -P

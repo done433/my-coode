@@ -1,0 +1,205 @@
+wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install vagrant
+
+
+sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients
+sudo apt install -y  libvirt-dev libvirt-daemon-system libvirt-clients ebtables dnsmasq-base ruby-dev build-essential
+
+
+
+sudo usermod -aG libvirt $USER
+sudo usermod -aG kvm $USER
+
+sudo systemctl start libvirtd qemu-kvm
+
+exec su - $USER
+
+#login aut frefer
+
+
+
+
+###command
+
+
+# הפעלה מחדש של המכונה הווירטואלית בתיקייה הנוכחית כדי להחיל שינויי הגדרות
+vagrant reload
+
+# ניקוי ה"זיכרון" של Vagrant והסרת מכונות ישנות או פגומות שכבר לא קיימות במערכת מהרשימה הגלובלית
+vagrant global-status --prune
+
+# הצגת רשימה של כל המכונות הווירטואליות המנוהלות על ידי Vagrant במחשב ומצבן (רצות/כבויות)
+vagrant global-status
+
+# הצגת רשימת כל ה"בוקסים" (אימג'ים/תבניות של מערכות הפעלה) שהורדו למחשב שלך
+vagrant box list
+
+# הסרה מוחלטת של בוקס ספציפי מהמחשב, כולל כל הגרסאות שלו ובאופן מאולץ (יש להחליף את <שם_הקופסה>)
+vagrant box remove <שם_הקופסה> --all --force
+
+# מחיקה והשמדה מוחלטת של המכונה הווירטואלית בתיקייה הנוכחית (מוחק את הדיסק הווירטואלי)
+vagrant destroy -f
+
+# כיבוי כפוי ומיידי של המכונה הווירטואלית בתיקייה הנוכחית (כמו לנתק מהחשמל)
+vagrant halt --force
+
+# כיבוי מסודר של המכונה ולאחר מכן הדלקה מחדש שלה ברצף אחד
+vagrant halt && vagrant up
+
+# התחברות ב-SSH ישירות לתוך הטרמינל של המכונה הווירטואלית הפעילה בתיקייה הנוכחית
+vagrant ssh
+
+
+
+
+#################################################
+#ubuntu
+vagrant init ubuntu/jammy64 && vagrant up
+
+#Debian
+vagrant init debian/bookworm64 && vagrant up
+
+#Rocky Linux 9
+vagrant init rockylinux/9 && vagrant up
+
+#AlmaLinux
+vagrant init almalinux/9 && vagrant up
+
+#Fedora
+vagrant init fedora/39-cloud-base && vagrant up
+
+
+################################################
+
+
+vagrant plugin install vagrant-bindfs
+
+vagrant plugin list
+
+
+config.vm.box = "generic/debian12"
+
+
+
+
+
+
+
+
+
+
+##openwrt#########################################################################################################
+
+#from   https://portal.cloud.hashicorp.com/vagrant/discover/vladimir-babichev/openwrt-21.02
+
+
+
+mkdir vagrant && cd vagrant 
+
+
+vagrant plugin install vagrant-libvirt
+
+vagrant init vladimir-babichev/openwrt-21.02
+
+
+nano Vagrantfile
+
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "vladimir-babichev/openwrt-21.02"
+  config.vm.box_version = "1.3.0"
+  config.vm.synced_folder ".", "/root", disabled: true
+
+  end
+end
+
+
+
+
+
+vagrant up --provider=libvirt
+
+
+####################################################################################################
+
+
+
+
+
+
+
+
+#####################################################################################################
+
+vagrant box add debian/bookworm64 \
+--box-version 12.20260519.1 \
+--provider libvirt
+
+
+
+
+
+nano Vagrantfile
+
+
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  config.vm.box_version = "12.20260519.1"
+
+  config.vm.provider :libvirt do |lv|
+    lv.memory = 128
+    lv.cpus = 1
+  end
+end
+
+
+
+
+
+vagrant up --provider=libvirt
+
+
+
+vagrant box list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#clean
+vagrant box remove <name> --all --force
+
+
+rm -rf ~/.vagrant.d/boxes
+rm -rf ~/.vagrant.d/data
+rm -rf ~/.vagrant.d/tmp
+
+sudo rm -f /var/lib/libvirt/images/*.qcow2
+sudo rm -f /var/lib/libvirt/images/*.img
+
+virsh net-list --all
+
+virsh net-destroy virbr1
+virsh net-undefine virbr1
+
+
+
+
+

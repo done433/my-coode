@@ -1,0 +1,87 @@
+apt update
+apt install rsyslog
+systemctl enable rsyslog
+systemctl start rsyslog
+
+apt install fail2ban -y
+
+
+sudo apt install fail2ban -y
+
+
+sudo cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+systemctl start fail2ban
+systemctl enable fail2ban
+
+sudo systemctl restart fail2ban
+
+
+#
+sudo fail2ban-client reload
+
+
+#
+fail2ban-client status
+
+
+
+
+#
+fail2ban-client status sshd
+
+
+
+#Monitor connect  activity:
+sudo tail -f  /var/log/auth.log
+
+
+#Monitor Fail2ban activity:
+sudo tail -f /var/log/fail2ban.log
+
+
+#Find banned IPs in the logs:
+grep 'Ban' /var/log/fail2ban.log
+
+
+
+awk '($(NF-1) == "Ban"){print $NF}' /var/log/fail2ban.log   | sort | uniq -c | sort -n
+
+zgrep -h "Ban " /var/log/fail2ban.log*  | awk '{print $NF}' | sort | uniq -c
+
+zgrep -h "Ban " /var/log/fail2ban.log*  | awk '{print $NF}'  | awk -F\. '{print $1"."$2"."}'  | sort | uniq -c  | sort -n | tail
+
+awk '($(NF-1) = /Ban/){print $NF,"("$NF")"}' /var/log/fail2ban.log | sort   | logresolve  | uniq -c | sort -n
+
+grep "Ban " /var/log/fail2ban.log  | awk -F[\ \:] '{print $19,$17}' | sort | uniq -c | sort -n
+
+grep "Ban " /var/log/fail2ban.log  | grep $(date +%Y-%m-%d)  | awk '{print $NF}' | sort   | awk '{print $1,"("$1")"}'  | logresolve  | uniq -c | sort -n
+
+zgrep -h "Ban " /var/log/fail2ban.log* | awk '{print $6,$1}'  | sort | uniq -c 
+
+
+#Check configuration syntax:
+sudo fail2ban-client -d
+
+#View system logs for Fail2ban:
+journalctl -u fail2ban
+
+
+
+#To view the iptables rules created by Fail2ban:
+sudo iptables -L -n
+
+#To remove or flush all Fail2ban-related rules:
+sudo iptables -F
+
+
+
+
+########################################
+
+#to see theis is exsist
+ls -la /etc/init.d/fail2ban
+
+sudo update-rc.d fail2ban defaults
+sudo service fail2ban start

@@ -1,0 +1,5 @@
+ sudo apt install monitorix 
+sudo systemctl start  monitorix
+ sudo monitorix 
+
+http://127.0.0.1:8080/monitorix/

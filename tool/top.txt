@@ -1,0 +1,267 @@
+
+######
+brew install gtop
+
+gtop
+######
+brew install gotop 
+
+gotop
+
+######
+
+brew install bottom
+
+btm
+
+
+
+######
+
+
+
+
+######
+sudo apt install nethogs
+
+sudo nethogs
+
+sudo timeout 30s nethogs
+
+which nethogs
+
+
+sudo setcap cap_net_admin,cap_net_raw,cap_dac_read_search,cap_sys_ptrace+ep /usr/sbin/nethogs
+
+
+getcap "$(which nethogs)"
+getcap /usr/sbin/nethogs
+
+
+nethogs
+
+
+timeout 10s nethogs
+
+
+
+
+x-terminal-emulator -e bash -c 'nethogs'
+
+
+
+###############################################################################################
+
+
+
+sudo apt install dstat
+dstat
+
+
+sudo apt install btop
+
+btop
+#key to btop
+x-terminal-emulator "btop"
+
+x-terminal-emulator -e btop
+
+
+
+#כדי להציג סטטיסטיקות של תהליכים המשתמשים ברוב המעבד
+
+dstat -c --top-cpu
+
+#כדי להציג סטטיסטיקות של תהליך המשתמש ברוב הזיכרון
+
+dstat -d --top-mem
+
+
+
+sudo apt install sysstat -y        # התקנת חבילת sysstat לניטור ביצועים (CPU, דיסק, רשת)
+
+nano /etc/default/sysstat          # עריכת קובץ הגדרות להפעלת איסוף הנתונים
+ENABLED="true"                    # הפעלת איסוף נתונים אוטומטי
+
+sudo systemctl enable sysstat      # הפעלת השירות בעלייה אוטומטית של המערכת
+sudo systemctl start sysstat       # התחלת השירות בפועל
+
+systemctl list-timers | grep sysstat   # בדיקה שהטיימרים (cron) של sysstat פעילים
+
+cat /etc/cron.d/sysstat           # צפייה במשימות המתוזמנות של sysstat
+
+ls -l /var/log/sa/                # צפייה בקבצי הלוג שנשמרים ע"י sysstat
+sar -u -f /var/log/sa/sa26        # הצגת נתוני CPU מקובץ לוג לפי תאריך
+
+sar -u                            # הצגת שימוש CPU בזמן אמת
+
+iostat                            # סטטיסטיקות דיסק ו-I/O
+
+
+sar -n DEV                        # סטטיסטיקות רשת לפי ממשק
+
+iostat -x 5 3                     # סטטיסטיקות דיסק מפורטות כל 5 שניות (3 פעמים)
+
+pidstat 1 5                       # סטטיסטיקות לפי תהליך כל שנייה (5 פעמים)
+
+
+
+
+sudo apt install atop
+
+#atop – ניטור מערכת מלא כולל דיסקים
+sudo atop
+
+
+sudo apt install glances
+glances 
+
+
+sudo apt install smem
+
+smem -k
+
+smem -r -k
+
+
+
+sudo apt install lm-sensors && watch sensors
+
+
+
+
+
+#iotop – מראה קריאה/כתיבה לפי תהליך (Real-time)
+sudo iotop
+
+#iostat – סטטיסטיקות דיסק בזמן אמת (לפי device)
+iostat -dx 1
+
+sudo apt install ncdu   #  מותקן
+ncdu /
+
+
+
+sudo apt install baobab -y
+
+baobab
+
+
+#####
+brew install glances
+
+glances
+
+#####
+brew install atop
+
+atop
+
+####
+#dstat – תצוגה חיה ויפה של IO
+dstat -d --disk-util
+
+
+
+
+
+
+
+#עדכון רשימת חבילות
+sudo apt update
+
+#התקנת הכלי החדש (nftables)
+sudo apt install -y nftables
+
+#אפשר להפעיל אותו ולוודא שהוא עולה עם המערכת
+sudo systemctl enable nftables
+sudo systemctl start nftables
+
+
+
+######################
+
+systemd-cgtop
+
+systemd-cgls
+###################################
+
+#TapMap
+
+docker pull olalie/tapmap:latest
+
+
+mkdir -p ~/tapmap-data
+
+
+docker run --rm \
+  --network host \
+  --pid host \
+  -v ~/tapmap-data:/data \
+  -e TAPMAP_IN_DOCKER=1 \
+  olalie/tapmap:latest
+
+
+#open
+http://127.0.0.1:8050
+
+
+
+#############################################
+
+
+mkdir -p ~/Music/netalertx/data
+
+docker run -d \
+  --name netalertx \
+  --network=host \
+  --restart unless-stopped \
+  --cap-add=NET_RAW \
+  --cap-add=NET_ADMIN \
+  --cap-add=NET_BIND_SERVICE \
+  -v ~/Music/netalertx/data:/data \
+  -v /etc/localtime:/etc/localtime:ro \
+  --tmpfs /tmp:uid=20211,gid=20211,mode=1700 \
+  -e PORT=20211 \
+  ghcr.io/netalertx/netalertx:latest
+
+
+
+
+open http://127.0.0.1:20211/
+
+
+
+
+
+
+
+
+
+#cpu temperatura
+sensors
+
+sensors | grep -E 'Core|Package'
+
+#ram temperatura
+sensors | grep -E 'Adapter|Core|Package|temp1'
+
+
+
+
+
+
+
+
+#####################################################################
+#####################################################################
+
+ps -eo comm=,%cpu=,rss= | awk '{ cpu[$1] += $2; mem[$1] += $3 } END { for (p in cpu) printf "%-30s %8.1f%% %10.0f MB\n", p, cpu[p], mem[p]/1024 }' | sort -k2 -nr
+
+
+
+
+#####################################################################
+
+ip -s link | awk '/^[0-9]+: /{iface=$2; sub(/:$/,"",iface)} /RX:/{getline; printf "%-20s RX: %10.2f MB",iface,$1/1024/1024} /TX:/{getline; printf "   TX: %10.2f MB\n",$1/1024/1024}'
+

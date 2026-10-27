@@ -1,0 +1,12 @@
+
+sudo apt install -y build-essential git rsync bc cpio unzip file wget libncurses-dev
+
+mkdir -p ~/guest-linux && cd ~/guest-linux
+
+git clone --depth 1 https://gitlab.com/buildroot.org/buildroot.git
+
+cd buildroot
+
+make qemu_x86_64_defconfig
+
+make menuconfig

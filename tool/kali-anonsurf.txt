@@ -1,0 +1,34 @@
+#to install 
+cd /tmp
+
+git clone https://github.com/Und3rf10w/kali-anonsurf.git
+
+
+cd kali-anonsurf
+
+chmod +x ./installer.sh
+
+
+sudo ./install.sh
+
+
+
+
+
+
+sudo anonsurf start
+
+
+sudo anonsurf status
+
+
+sudo anonsurf change
+
+
+sudo anonsurf stop
+￼
+
+sudo pandora bomb
+
+
+sudo anonsurf restart

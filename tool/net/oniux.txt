@@ -1,0 +1,246 @@
+
+# install on  debian
+
+sudo apt install -y build-essential git curl pkg-config libssl-dev
+
+sudo apt remove -y rustc cargo
+
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+source "$HOME/.cargo/env"
+
+rustup update stable
+rustc --version
+cargo --version
+
+
+
+#===וידוא שה-swap הזמני פעיל===
+#אם /swapfile-oniux לא מופיע, יוצרים אותו מחדש (מונע שוב את SIGKILL)
+if ! swapon --show | grep -q swapfile-oniux; then
+sudo fallocate -l 4G /swapfile-oniux
+sudo chmod 600 /swapfile-oniux
+sudo mkswap /swapfile-oniux
+sudo swapon /swapfile-oniux
+fi
+free -h
+
+#===הגדרות קומפילציה חסכוניות בזיכרון===
+#חייבים להגדיר שוב בכל טרמינל חדש
+export CARGO_BUILD_JOBS=1
+export CARGO_PROFILE_RELEASE_LTO=false
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
+export CARGO_PROFILE_RELEASE_DEBUG=0
+
+
+
+
+rm -rf "$HOME/.cargo/git/checkouts/oniux-"* "$HOME/.cargo/git/db/oniux-"*
+
+TAG=$(git ls-remote --tags --sort=-v:refname https://gitlab.torproject.org/tpo/core/oniux | grep -o 'v[0-9.]*$' | head -1)
+TAG=${TAG:-v0.10.0}
+echo "Installing oniux $TAG"
+
+
+cargo install --locked --git https://gitlab.torproject.org/tpo/core/oniux --tag "$TAG" oniux
+
+
+which oniux
+ls -l "$HOME/.cargo/bin/oniux"
+
+
+
+
+
+
+
+
+
+
+
+
+if [ "$(sysctl -n kernel.apparmor_restrict_unprivileged_userns 2>/dev/null)" = "1" ]; then
+sudo tee /etc/apparmor.d/oniux > /dev/null <<EOF
+abi <abi/4.0>,
+include <tunables/global>
+
+profile oniux $HOME/.cargo/bin/oniux flags=(unconfined) {
+  userns,
+  include if exists <local/oniux>
+}
+EOF
+sudo apparmor_parser -r /etc/apparmor.d/oniux
+echo "AppArmor profile for oniux loaded"
+else
+echo "No AppArmor userns restriction - skipping"
+fi
+
+
+
+
+
+
+###########################################################
+###########################################################
+
+
+#===בדיקה 2: מצב IPv6===
+#אם התיקייה לא קיימת, IPv6 כבוי ברמת הקרנל (ipv6.disable=1)
+ls /proc/sys/net/ipv6 >/dev/null 2>&1 && echo "IPv6 kernel support: YES" || echo "IPv6 kernel support: NO (disabled at boot)"
+#1 = IPv6 כבוי, 0 = IPv6 פעיל
+sysctl net.ipv6.conf.all.disable_ipv6 net.ipv6.conf.default.disable_ipv6 net.ipv6.conf.lo.disable_ipv6 2>/dev/null
+#מחפש איפה IPv6 כובה בהגדרות
+grep -rn "disable_ipv6" /etc/sysctl.conf /etc/sysctl.d/ 2>/dev/null
+grep -n "ipv6.disable" /etc/default/grub /proc/cmdline 2>/dev/null
+
+#===בדיקה 3: שחזור הבעיה בלי oniux===
+#מנסה לעשות בדיוק מה ש-oniux עושה: namespace חדש והוספת כתובות ל-loopback
+#אם כאן מתקבלת שגיאה, זה מאשר שהבעיה במערכת ולא ב-oniux
+unshare -rn sh -c 'ip link set lo up && ip addr add 127.0.0.1/8 dev lo 2>&1; ip -6 addr add ::1/128 dev lo 2>&1; ip addr show lo'
+
+#===תיקון: הפעלת IPv6 (מיידי, עד הפעלה מחדש)===
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0
+sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=0
+
+#===בדיקה חוזרת של oniux===
+#אמור להחזיר IP של Tor ו-"IsTor":true
+oniux curl https://icanhazip.com
+oniux curl https://check.torproject.org/api/ip
+
+#===אם זה עבד: הפיכת התיקון לקבוע===
+#מבטל את שורות disable_ipv6 בקבצי sysctl (גיבוי נשמר עם סיומת .bak)
+sudo sed -i.bak 's/^\(\s*net\.ipv6\.conf\..*disable_ipv6\s*=\s*1\)/#\1/' /etc/sysctl.conf
+for f in /etc/sysctl.d/*.conf; do sudo sed -i.bak 's/^\(\s*net\.ipv6\.conf\..*disable_ipv6\s*=\s*1\)/#\1/' "$f"; done
+#קובץ שמבטיח ש-IPv6 יהיה פעיל אחרי הפעלה מחדש
+printf 'net.ipv6.conf.all.disable_ipv6=0\nnet.ipv6.conf.default.disable_ipv6=0\nnet.ipv6.conf.lo.disable_ipv6=0\n' | sudo tee /etc/sysctl.d/99-oniux-ipv6.conf
+sudo sysctl --system
+
+#===אם בבדיקה 2 יצא "IPv6 kernel support: NO"===
+#IPv6 כבוי ב-GRUB. מוחקים את ipv6.disable=1 ומפעילים מחדש:
+sudo sed -i.bak 's/ipv6\.disable=1//g' /etc/default/grub
+sudo update-grub
+sudo reboot
+
+
+
+
+#######################################################################
+######################################################################
+
+
+
+
+#===shell שכל התעבורה שלו עוברת דרך Tor===
+oniux bash
+
+#===אפליקציה גרפית דרך Tor===
+oniux hexchat
+
+#===לוג מפורט לאיתור תקלות===
+RUST_LOG=debug oniux curl https://icanhazip.com
+
+
+
+#===בדיקה שהתעבורה עוברת דרך Tor===
+#אמור להחזיר כתובת IP של צומת יציאה של Tor (ולא ה-IP שלך)
+oniux curl https://icanhazip.com
+#אמור להחזיר "IsTor":true
+oniux curl https://check.torproject.org/api/ip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

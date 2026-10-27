@@ -1,0 +1,59 @@
+
+sudo apt install fastboot python3-pip git -y
+sudo apt install -y android-tools-adb android-tools-fastboot
+sudo apt install -y heimdall-flash
+sudo apt install -y android-sdk-platform-tools-common
+sudo apt install -y unzip wget curl git
+
+
+
+
+
+
+
+
+
+###############################################################
+
+
+adb kill-server
+adb start-server
+
+
+# בדיקה שהטלפון מזוהה
+adb devices
+
+# כניסה ל־shell של הטלפון (אופציונלי)
+adb shell
+
+
+# העתקת קובץ מהמחשב לטלפון
+adb push ~/Downloads/file.zip /sdcard/Download/
+
+# העתקת תיקייה שלמה מהמחשב לטלפון
+adb push ~/myfolder /sdcard/
+
+# העתקת קובץ מהטלפון למחשב
+adb pull /sdcard/Download/photo.jpg ~/Desktop/
+
+# העתקת תיקייה שלמה מהטלפון למחשב
+adb pull /sdcard/DCIM ~/Desktop/DCIM_backup
+
+
+
+
+#ot install os on twrp mode
+adb push lineage-21.0-20240620-UNOFFICIAL-hero2lte.zip /sdcard/ 
+
+
+#list app 
+pm list packages
+
+
+#app promition
+pm dump <app name> | grep permission
+dumpsys package <app name> | grep permission 
+
+#chek promishen gat 
+dumpsys <app name>  | grep granted
+

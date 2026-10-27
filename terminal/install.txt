@@ -1,0 +1,184 @@
+
+sudo apt install kitty -y 
+sudo apt install bash zsh fzf -y
+
+chsh -s /usr/bin/zsh
+
+#לבחור טרמינל ברירת מחדך 
+sudo update-alternatives --config x-terminal-emulator
+
+
+sudo apt update && sudo apt install -y zsh zsh-autosuggestions zsh-syntax-highlighting  command-not-found
+
+ packagekit-command-not-found
+
+
+ sudo apt install zsh  zsh-autosuggestions  zsh-common     zsh-syntax-highlighting  zsh-theme-powerlevel9k    -y
+
+ 
+ sudo apt install -y zsh zsh-common  bash-completion
+ 
+ 
+ sudo apt install -y thefuck fzf zoxide 
+eval "$(thefuck --alias)"
+
+sudo apt install command-not-found -y
+
+cargo install alacritty
+
+brew install romkatv/powerlevel10k/powerlevel10k
+
+brew install zsh-history-substring-search
+echo 'source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh' >> ~/.zshrc
+
+
+source /home/linuxbrew/.linuxbrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+
+
+brew install starship
+
+
+eval "$(starship init zsh)"
+
+
+brew install mcfly
+
+nano .zshrc 
+
+eval "$(mcfly init zsh)"
+
+
+##########################################################
+
+nano ~/.zshrc
+
+eval "$(mcfly init zsh)"
+bindkey '^R' '$(mcfly search)'
+export MCFLY_HISTORY="$HOME/.local/share/mcfly"
+mkdir -p "$MCFLY_HISTORY"
+export MCFLY_SESSION_ID="default"
+export MCFLY_HISTFILE="$HISTFILE"
+
+
+mcfly train
+
+#to check
+mcfly stats
+ls ~/.local/share/mcfly
+
+#if whanna on ctel + r add to ~/.zshrc
+
+bindkey '^R' '$(mcfly search)'
+
+#######################################################################################
+
+
+
+
+
+
+brew install navi 
+
+navi repo add denisidoro/cheats
+
+navi repo add tldr-pages/tldr
+
+navi repo add denisidoro/linux-cheat
+navi repo add denisidoro/git-cheat
+
+navi repo browse
+
+nano .zshrc
+
+eval "$(navi widget zsh)" 
+
+source ~/.zshrc
+
+
+#to criate file navi config
+mkdir -p "$(dirname "$(navi info config-path)")"
+navi info config-example > "$(navi info config-path)"
+
+
+
+sudo apt install grc -y
+
+sudo sed -i 's/^#\?GRC_ALIASES=.*/GRC_ALIASES=true/' /etc/default/grc
+
+
+nano  /etc/default/grc
+
+GRC_ALIASES=true
+
+
+
+nano .zshrc
+
+[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
+
+
+
+
+
+sudo apt install bat
+
+nano .zshrc
+
+alias bat="batcat"
+
+
+
+
+sudo apt install highlight
+
+
+
+
+
+
+
+sudo apt install zoxide -y 
+eval "$(zoxide init zsh)"
+setopt CORRECT
+brew install cheat 
+brew install tlrc
+
+######
+#modern ls
+sudo apt install eza 
+
+eza
+######
+
+
+sudo apt update
+sudo apt install zoxide
+
+
+
+
+
+
+sudo snap install tldr
+
+tldr --print-completion zsh | sudo tee /usr/share/zsh/site-functions/_tldr
+
+
+
+
+#####################################3
+
+# to install oh my bazh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+ 
+
+
+#to fix p10k
+p10k configure
+
+
+
+###########
+
+brew install   fzf    navi  starship  topgrade cheat mcfly   tlrc zlib-ng-compat  zsh-history-substring-search powerlevel10k 

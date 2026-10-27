@@ -1,0 +1,24 @@
+VMID=100
+VMNAME="debian13"
+IMAGE_PATH="/var/lib/vz/template/iso/Parrot-security-7.3_amd64.qcow2"
+STORAGE="local"
+
+
+qm create $VMID --name $VMNAME --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+
+qm importdisk $VMID $IMAGE_PATH $STORAGE
+
+qm set $VMID --scsihw virtio-scsi-pci --scsi0 $STORAGE:$VMID/vm-$VMID-disk-0.raw
+
+qm set $VMID --boot order=scsi0
+
+qm set $VMID --ide2 $STORAGE:cloudinit
+
+qm set $VMID --ciuser debian --cipassword 
+
+qm set $VMID --serial0 socket
+
+
+qm config $VMID
+qm start $VMID
+

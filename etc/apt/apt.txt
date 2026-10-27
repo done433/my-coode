@@ -1,0 +1,47 @@
+# תיקון חבילות שבורות
+sudo apt-get install -f       # מנסה לתקן תלות שבורה ולהתקין חבילות חסרות
+
+# תיקון חבילות שבורות (אלטרנטיבה מודרנית)
+sudo apt --fix-broken install # בודק ומתקן חבילות שבורות, גרסה מודרנית יותר של apt
+
+# התקנה מחדש של חבילות קריטיות (למשל תעודות SSL)
+sudo apt install --reinstall ca-certificates  # מתקין מחדש את חבילות תעודות האבטחה
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################
+
+dpkg -S /etc/..<derectory>
+
+###########
+sudo apt install apt-file
+
+sudo apt-file update
+
+apt-file search <file>
+###########
+
+apt rdepends <tool>
+
+
+apt-cache policy <tool>
+
+apt rdepends --important <tool>
+aptitude why <tool>
+

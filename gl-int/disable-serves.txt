@@ -1,0 +1,35 @@
+#שמות השירותים שמופעלים 
+ls /etc/rc.d/S*
+
+
+# השבתת שירות שיתוף קבצים ברשת (SMB)
+/etc/init.d/ksmbd disable
+
+#disable sms
+/etc/init.d/smstools3 disable
+/etc/init.d/sms_manager disable
+
+# השבתת שירות הענן של חברת GL.iNet (לניהול מרחוק דרך האפליקציה שלהם)
+/etc/init.d/gl-cloud disable
+
+
+# השבתת שירות SIP ALG (מסייע לניתוב שיחות טלפוניה דרך האינטרנט / VoIP, מיותר לחלוטין אם אתה לא משתמש בטלפון IP דרך הראוטר)
+/etc/init.d/sip_alg disable
+
+
+#usb
+/etc/init.d/turn_on_usb_power disable
+/etc/init.d/usb3_disable disable
+
+
+
+
+
+# השבתת IPv6 (אם אתה משתמש רק בכתובות IPv4 רגילות ואינך צריך IPv6)
+/etc/init.d/gl_ipv6 disable
+
+# השבתת שירותי Site-to-Site של GL.iNet (S95gl_s2s) - מיותר אם אינך מחבר שני ראוטרים של החברה יחד במנהרה
+#/etc/init.d/gl_s2s disable
+
+# השבתת פורטל שבוי (Captive Portal) - שירות שמציג דף התחברות לציבור, מיותר לחלוטין בראוטר ביתי פרטי
+/etc/init.d/gl-portal disable

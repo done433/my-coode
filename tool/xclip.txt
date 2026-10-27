@@ -1,0 +1,50 @@
+sudo apt install xclip
+
+#to copy 
+
+echo "welcome to linuxconfig.org" | xclip
+
+#to see what copy
+
+xclip -o
+
+#secend copy
+cat myfile.txt | xclip -selection clipboard
+echo "hello" | xclip -selection clipboard
+
+
+#to see
+xclip -o -selection clipboard
+
+
+
+
+#cinamon 
+xclip -selection clipboard -o
+
+
+
+xsel --clipboard --output
+
+xclip -selection clipboard -o
+xclip -selection primary -o
+
+
+
+
+#to chek 
+
+ps -e | grep -E "cinnamon|mutter|kwin|wayland"
+
+ps -e | grep -E "clip|copy|parcellite|clipit|greenclip|diodon"
+
+
+
+
+
+
+wl-copy
+
+echo "hello" | wl-copy
+
+wl-paste

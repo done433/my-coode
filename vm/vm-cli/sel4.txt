@@ -1,0 +1,138 @@
+sudo apt update
+sudo apt install -y git make clang lld llvm device-tree-compiler qemu-system-arm python3 python3-pip curl wget xz-utils tmux
+
+
+
+
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo sysctl -w vm.overcommit_memory=1
+
+
+
+
+
+mkdir -p ~/sel4 && cd ~/sel4
+
+# הורדת SDK גרסה 2.3.1
+MICROKIT_VERSION=2.3.1
+wget https://github.com/seL4/microkit/releases/download/${MICROKIT_VERSION}/microkit-sdk-${MICROKIT_VERSION}-linux-x86-64.tar.gz
+tar xf microkit-sdk-${MICROKIT_VERSION}-linux-x86-64.tar.gz
+
+# הורדת libvmm והתת-מודולים שלה
+git clone --recursive https://github.com/au-ts/libvmm.git
+
+
+
+
+cd ~/sel4/libvmm/examples/simple
+
+# בניית המערכת והרצה ב-QEMU
+make MICROKIT_BOARD=qemu_virt_aarch64 MICROKIT_SDK=~/sel4/microkit-sdk-2.3.1 qemu
+
+
+
+
+
+#to clean 
+sudo swapoff /swapfile 2>/dev/null
+sudo rm -f /swapfile
+
+
+
+
+
+
+########################################
+
+mkdir -p ~/sel4-vm & cd sel4-vm
+
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+
+
+repo init -u https://github.com/seL4/camkes-vm-examples-manifest.git
+
+repo sync
+
+mkdir build && cd build
+
+
+##
+cd ~/sel4-vm
+find . -type f \( -name "*requirements*" -o -name "setup.py" -o -name "pyproject.toml" \)
+
+##
+
+pip install -r projects/capdl/python-capdl-tool/requirements.txt
+
+pip install kernel/tools/python-deps
+
+pip install projects/camkes-tool/tools/python-deps
+
+
+
+cd build
+
+
+#math wey config
+
+../init-build.sh -DPLATFORM=pc99 \
+                 -DCAMKES_VM_APP=minimal_64 \
+                 -DKernelVerifyKernel=ON \
+                 -DKernelDebug=OFF \
+                 -DKernelLogServer=OFF
+
+
+
+
+../init-build.sh -DPLATFORM=pc99 \
+                 -DCAMKES_VM_APP=minimal_64 \
+                 -DCMAKE_C_FLAGS="-Wno-error"
+
+
+
+#
+
+curl -sSL https://get.haskellstack.org/ | sh
+
+ninja
+
+
+rm -rf * && ../init-build.sh -DPLATFORM=pc99 -DCAMKES_VM_APP=minimal_64
+
+ninja
+
+
+
+ls -l images/
+
+
+
+
+
+
+#===בדיקה שהוירטואליזציה עברה===
+#צריך להיות גדול מ-0 ו-/dev/kvm צריך להופיע
+egrep -c '(vmx|svm)' /proc/cpuinfo
+ls -l /dev/kvm
+sudo /usr/sbin/kvm-ok
+
+#===הרשאה ל-KVM===
+#אחרי הפקודה להתנתק ולהתחבר מחדש
+sudo usermod -aG kvm $USER
+
+#===הרצת camkes-vm===
+#יציאה מ-QEMU: Ctrl+A ואז X
+cd ~/sel4-vm/build
+qemu-system-x86_64 \
+  -machine q35,accel=kvm,kernel-irqchip=split \
+  -enable-kvm \
+  -cpu host \
+  -m 2G \
+  -nographic \
+  -serial mon:stdio \
+  -kernel images/kernel-x86_64-pc99 \
+  -initrd images/capdl-loader-image-x86_64-pc99

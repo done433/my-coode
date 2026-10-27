@@ -1,0 +1,38 @@
+ 
+ 
+ sudo apt install libssl-dev pkg-config
+ 
+ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh 
+ nano ~/.bashrc
+ 
+ 
+ #. "$HOME/.cargo/env" 
+ #source "$HOME/.cargo/env"
+ #export PATH="$HOME/.cargo/bin:$PATH"
+ [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+ source ~/.bashrc
+
+ 
+ 
+ cargo install cargo-cache
+ cargo install cargo-update
+ cargo install-update -a
+ 
+ cargo install topgrade
+ cargo install rustscan
+ cargo install --git https://gitlab.torproject.org/tpo/core/oniux --tag v0.4.0 oniux
+ cargo install 
+ cargo install alacritty
+ cargo install xsv
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ #####
+ 
+ cargo-cache -a

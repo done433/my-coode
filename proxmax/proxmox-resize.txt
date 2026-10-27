@@ -1,0 +1,12 @@
+
+
+# מחיקת local-lvm ומתן מקום ל-local
+lvremove /dev/pve/data
+lvresize -l +100%FREE /dev/pve/root
+resize2fs /dev/pve/root
+
+
+pvesm remove local-lvm
+
+pvesm set local --content iso,vztmpl,backup,images,rootdir
+

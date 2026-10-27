@@ -1,0 +1,32 @@
+
+##https://github.com/royhills/arp-scan
+
+
+
+#to install 
+
+sudo apt install arp-scan
+
+sudo arp-scan --interface=<interfaces> --localnet
+
+sudo arp-scan -I <interfaces> 10.0.0.0/24
+
+sudo arp-scan -I <interfaces> -l
+
+sudo arp-scan -I <interfaces> --localnet --resolve
+
+
+sudo arp-scan -I <interfaces> -q -x --localnet
+
+
+sudo arp -i <interfaces> -a
+
+sudo arp-scan --localnet
+
+sudo arp-scan --interface=<interfaces> --localnet
+
+
+
+
+#זיהוי מערכת הפעלה
+sudo arp-fingerprint -l

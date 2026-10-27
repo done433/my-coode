@@ -1,0 +1,4 @@
+
+cinnamon-look-and-feel-misc --reset
+ 
+cinnamon-session-quit --logout --no-prompt

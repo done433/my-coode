@@ -1,0 +1,6 @@
+apt update
+apt install qemu-guest-agent -y
+
+systemctl enable --now qemu-guest-agent
+
+systemctl status qemu-guest-agent --no-pager

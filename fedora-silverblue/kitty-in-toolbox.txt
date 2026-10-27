@@ -1,0 +1,55 @@
+# 1. התקנת ספריות הגרפיקה, Wayland ו-EGL בתוך מיכל ה-Toolbx (החלף את 'tool' בשם המיכל שלך אם צריך)
+toolbox run -c tool sudo dnf install -y \
+  libwayland-client \
+  libwayland-cursor \
+  libwayland-egl \
+  mesa-dri-drivers \
+  mesa-libEGL \
+  mesa-libGL \
+  libglvnd \
+  libglvnd-egl \
+  libglvnd-glx
+
+# 2. הפעלת kitty מתוך המיכל עם התעלמות מקבצי תצורה ישנים ושימוש ב-bash (כדי למנוע תלות בנתיבי Homebrew חסרים)
+toolbox run -c tool kitty
+
+
+
+
+
+#in computer
+mkdir -p ~/.local/share/icons
+
+
+
+
+
+nano ~/.local/share/applications/toolbox-kitty.desktop
+
+
+[Desktop Entry]
+Name=Kitty (Toolbx)
+Comment=Fast, feature-rich, GPU-based terminal emulator
+Exec=toolbox run -c tool kitty
+Icon=/var/home/qwe/.local/share/icons/kitty.svg
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+
+
+
+
+#in continer
+cp /usr/share/icons/hicolor/256x256/apps/kitty.png ~/.local/share/icons/ 
+
+
+
+
+#in computer
+update-desktop-database ~/.local/share/applications
+
+
+
+
+#to chek if  in computer or toolbox
+cat /run/.toolboxenv 2>/dev/null && echo "בתוך ה-Toolbx" || echo "על המארח"

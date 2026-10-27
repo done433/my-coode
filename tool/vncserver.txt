@@ -1,0 +1,40 @@
+sudo apt update
+sudo apt install tightvncserver
+
+
+vncserver
+
+vncviewer 192.168.1.100:1
+
+
+touch /root/.Xauthority
+
+
+nano /root/.vnc/xstartup
+
+#!/bin/sh
+startxfce4 &
+
+
+
+vncserver -kill :1
+vncserver :1
+
+
+
+
+
+####################################
+
+
+sudo apt update
+sudo apt install websockify novnc
+
+sudo apt update
+sudo apt install x11vnc novnc
+
+
+x11vnc -rfbport 5901 -display :0 -httpdir /usr/share/novnc/ -httpport 6080
+
+http://10.37.236.167:6080/vnc.html
+

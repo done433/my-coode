@@ -1,0 +1,23 @@
+# dconf
+
+dconf reset -f /org/gnome/terminal/    # איפוס כל הגדרות ה-GNOME Terminal לברירת מחדל
+
+dconf dump /                           # הצגת כל ההגדרות השמורות ב-dconf
+
+
+
+
+
+sudo apt install dconf-editor
+#dconf-editor   org   cinnamon   desktop   keybindings   
+
+
+
+#my key short
+dconf dump /org/cinnamon/desktop/keybindings/
+
+#גיבוי הקיצורים שיצרתי
+dconf dump /org/cinnamon/desktop/keybindings/ > ~/my_shortcuts.bak
+
+#שיחזור הקיצורים שיצרתי
+dconf load /org/cinnamon/desktop/keybindings/ < ~/my_shortcuts.bak

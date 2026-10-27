@@ -1,0 +1,13 @@
+
+#to install
+
+sudo apt install speedtest-cli
+
+
+speedtest-cli
+
+
+#beter speedtest
+brew  install speedtest-go
+
+speedtest

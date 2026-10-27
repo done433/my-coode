@@ -1,0 +1,8 @@
+
+ps -u <user> -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 20
+
+pstree -p username
+
+
+ps aux | grep <tool_name>     # מצא תהליכים פועלים שקשורים לכלי מסוים
+

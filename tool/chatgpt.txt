@@ -1,0 +1,29 @@
+wget https://persistent.oaistatic.com/codex-app-prod/linux/deb/latest/chatgpt_amd64.deb
+
+
+sudo apt install ./chatgpt_amd64.deb
+
+
+apt policy chatgpt
+
+
+dpkg -L chatgpt
+
+
+
+nano ~/.config/firejail/chatgpt.profile
+
+
+
+
+
+
+
+
+
+
+ firejail --profile=~/.config/firejail/chatgpt.profile /usr/bin/true                                                  
+ 
+ firejail --profile=~/.config/firejail/chatgpt.profile /usr/bin/chatgpt
+
+  firejail --profile="$HOME/.config/firejail/chatgpt.profile" bash 

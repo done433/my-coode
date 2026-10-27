@@ -1,0 +1,37 @@
+# hciconfig 
+
+
+
+sudo apt install bluez bluez-tools -y
+
+
+sudo hciconfig hci0 down
+
+
+sudo hciconfig hci0 up
+
+hciconfig -a | grep "BD Address"
+
+hcitool scan
+
+hciconfig -a
+
+
+sudo btmgmt -i hci0 power off
+sudo btmgmt -i hci0 public-addr XX:XX:XX:XX:XX:XX
+sudo btmgmt -i hci0 power on
+
+sudo btmgmt power off
+sudo btmgmt static-addr 01:12:34:43:34:9M
+sudo btmgmt power on
+
+
+
+
+bluetoothctl
+
+power on
+
+agent on
+
+scan off

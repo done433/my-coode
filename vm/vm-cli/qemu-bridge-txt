@@ -1,0 +1,132 @@
+
+sudo apt install --no-install-recommends qemu-system-x86 qemu-utils
+
+ls -l /dev/kvm    
+
+aria2c -c -x 10 -s 6 "https://cdimage.kali.org/kali-2026.2/kali-linux-2026.2-qemu-amd64.7z"
+
+7z x kali-linux-2026.2-qemu-amd64.7z
+
+echo "allow br0" | sudo tee /etc/qemu/bridge.conf
+
+
+
+sudo ip tuntap add dev tap0 mode tap
+sudo ip addr add 172.31.250.1/24 dev tap0
+sudo ip link set dev tap0 up
+
+
+
+sudo ip link set dev tap0 down
+sudo ip addr flush dev tap0
+sudo ip addr add 172.31.250.1/24 dev tap0
+sudo ip link set dev tap0 up
+
+
+
+
+
+
+
+
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -F POSTROUTING
+sudo iptables -t nat -A POSTROUTING -o wlp0s20f3 -j MASQUERADE
+sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i tap0 -o wlp0s20f3 -j ACCEPT
+
+
+########################
+
+#under vpn 
+
+sudo iptables -t nat -F POSTROUTING
+sudo iptables -F FORWARD
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+sudo iptables -A FORWARD -i tap0 -o tun0 -j ACCEPT
+sudo iptables -A FORWARD -i tun0 -o tap0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+########################
+
+#שזה יתפוס אוטומטית את ממשק ה-default route 
+
+sudo bash -c '
+sysctl -w net.ipv4.ip_forward=1
+DEF_IFACE=$(ip route show | awk "/default/ {print \$5; exit}")
+iptables -t nat -F POSTROUTING
+iptables -F FORWARD
+iptables -t nat -A POSTROUTING -o "$DEF_IFACE" -j MASQUERADE
+iptables -A FORWARD -i tap0 -o "$DEF_IFACE" -j ACCEPT
+iptables -A FORWARD -i "$DEF_IFACE" -o tap0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+echo "NAT applied successfully on interface: $DEF_IFACE"
+'
+
+#####################
+qemu-system-x86_64 \
+  -enable-kvm \
+  -machine type=q35 \
+  -cpu host \
+  -smp 2 \
+  -m 4G \
+  -drive file=kali-linux-2026.2-qemu-amd64.qcow2,if=virtio,format=qcow2 \
+  -nic tap,ifname=tap0,model=virtio, \
+  -nographic \
+  -serial mon:stdio
+
+
+
+
+
+
+
+
+
+sudo ip addr add 172.31.250.50/24 dev eth0
+sudo ip link set dev eth0 up
+sudo ip route add default via 172.31.250.1
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+
+
+
+
+hostname -I
+
+
+ping -c 3 172.31.250.1
+
+
+
+
+sudo nmcli connection modify "Wired connection 1" ipv4.addresses 172.31.250.50/24 ipv4.gateway 172.31.250.1 ipv4.dns "8.8.8.8" ipv4.method manual
+sudo nmcli connection up "Wired connection 1"
+
+
+
+
+
+sudo nmcli connection modify "Ethernet connection 1" ipv4.addresses 172.31.250.50/24 ipv4.gateway 172.31.250.1 ipv4.dns "8.8.8.8" ipv4.method manual
+sudo nmcli connection up "Ethernet connection 1"
+
+
+
+
+######
+
+#send usb
+
+sudo qemu-system-x86_64 \
+  -enable-kvm \
+  -machine type=q35,usb=on \
+  -device qemu-xhci,id=xhci \
+  -cpu host \
+  -smp 2 \
+  -m 4G \
+  -drive file=kali-linux-2026.2-qemu-amd64.qcow2,if=virtio,format=qcow2 \
+  -nic tap,ifname=tap0,model=virtio \
+  -device usb-host,vendorid=0x3151,productid=0x3020 \
+  -nographic \
+  -serial mon:stdio

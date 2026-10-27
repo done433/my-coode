@@ -1,0 +1,15 @@
+# to to check if router  can open now UPnP
+
+sudo apt install miniupnpc
+
+#to check
+upnpc -s
+
+
+
+sudo apt install natpmpc
+￼
+natpmpc -g 192.168.1.1
+￼
+
+

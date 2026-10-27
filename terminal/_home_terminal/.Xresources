@@ -1,0 +1,32 @@
+! גודל המסך
+XTerm.vt100.geometry: 120x40
+XTerm.vt100.faceName: Monospace
+XTerm.vt100.faceSize: 12
+
+! הפעלה של 256 צבעים
+XTerm*termName: xterm-256color
+
+! רקע שחור וטקסט לבן
+XTerm*background: #000000
+XTerm*foreground: #ffffff
+
+! צבעי ANSI בהירים
+XTerm*color0:  #1e1e2e
+XTerm*color1:  #ff5555
+XTerm*color2:  #50fa7b
+XTerm*color3:  #f1fa8c
+XTerm*color4:  #bd93f9
+XTerm*color5:  #ff79c6
+XTerm*color6:  #8be9fd
+XTerm*color7:  #bbbbbb
+XTerm*color8:  #555555
+XTerm*color9:  #ff6e6e
+XTerm*color10:#69ff94
+XTerm*color11:#ffffa5
+XTerm*color12:#d6acff
+XTerm*color13:#ff92df
+XTerm*color14:#a4ffff
+XTerm*color15:#ffffff
+
+! שורות גלילה
+XTerm*saveLines: 10000

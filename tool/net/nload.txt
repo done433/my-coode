@@ -1,0 +1,6 @@
+
+sudo apt install nload
+
+sudo nload
+
+sudo nload eth0

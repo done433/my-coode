@@ -1,0 +1,15 @@
+sudo apt update && sudo apt install kexec-tools -y
+#sudo systemctl kexec
+
+sudo kexec -l /vmlinuz --initrd=/initrd.img --reuse-cmdline
+sudo kexec -e
+
+
+
+#to check
+
+uptime -p
+
+last reboot | head -n 3
+
+

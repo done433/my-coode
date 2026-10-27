@@ -1,0 +1,55 @@
+sha256sum filename
+sha256sum *
+
+# * חישוב hash SHA256 לכל קובץ בתיקיות שונות
+find folder1 -type f -exec sha256sum {} \; | sort > folder1.sha256
+find folder2 -type f -exec sha256sum {} \; | sort > folder2.sha256
+
+# * חישוב SHA256 אחד לתיקייה שלמה (כולל כל תתי־התיקיות)
+tar -cf - folder1 | sha256sum
+
+# * אם רוצים נתיב מלא וברור
+tar -cf - /full/path/to/folder1 | sha256sum
+
+# * השוואה בין שתי תיקיות (כל אחת מקבלת hash אחד)
+tar -cf - folder1 | sha256sum
+
+# * יצירת hash לכל הקבצים בתיקיה, ומסדר את הקבצים לפי סדר אלפביתי
+find /path/to/folder -type f -exec sha256sum "{}" \; | sort > folder_hashes.txt
+
+# * חישוב SHA256 לתיקיה שלמה (כולל כל תתי־תיקיות)
+tar -cf - folder1 | sha256sum
+
+# * אם רוצים נתיב מלא וברור
+tar -cf - /full/path/to/folder1 | sha256sum
+
+# * השוואה בין שתי תיקיות (כל אחת מקבלת hash אחד)
+tar -cf - folder1 | sha256sum
+
+# * חישוב hash של כל קובץ בתיקייה ואז חישוב hash של כל הסכום של ה-hashים 
+find /path/to/dir/ -type f -exec sha256sum {} \; | awk '{print $1}' | sort -d | sha256sum
+
+
+
+#  גם קבצים נסתרים שמתחילים ב .  כל הקבצים בתיקייה הנוכחית וידלג על תיקיות
+for f in * .*; do [[ -f "$f" ]] || continue; sha256sum "$f"; done
+
+
+# כל הקבצים בתיקייה הנוכחית ובכל תתי‑תיקיות
+find . -type f -exec sha256sum {} + 
+
+
+
+
+
+#############################################################
+
+
+sudo apt update
+sudo apt install xxhash
+
+
+xxhsum file.txt
+
+
+

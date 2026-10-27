@@ -1,0 +1,51 @@
+
+sudo apt install qemu-system-x86 qemu-utils qemu-kvm
+
+mkdir -p openwrt-vm
+
+cd openwrt-vm
+
+
+wget -c https://downloads.openwrt.org/releases/24.10.3/targets/x86/64/openwrt-24.10.3-x86-64-generic-ext4-combined.img.gz
+
+
+gunzip openwrt-24.10.3-x86-64-generic-ext4-combined.img.gz
+
+
+
+qemu-system-x86_64 \
+  -m 512 \
+  -smp 2 \
+  -drive file=openwrt-24.10.3-x86-64-generic-ext4-combined.img,format=raw \
+  -netdev user,id=lan,net=192.168.1.0/24,host=192.168.1.2,hostfwd=tcp:127.0.0.1:8080-192.168.1.1:80 \
+  -device e1000,netdev=lan \
+  -netdev user,id=wan \
+  -device e1000,netdev=wan \
+  -nographic
+
+
+
+
+
+uci set network.wan='interface'
+uci set network.wan.device='eth1'
+uci set network.wan.proto='dhcp'
+uci commit network
+/etc/init.d/network restart
+
+
+ip addr
+
+ip route
+
+ping -c 4 openwrt.org
+
+
+ping -c 4 9.9.9.9
+
+uci show network
+
+
+
+open http://127.0.0.1:8080
+

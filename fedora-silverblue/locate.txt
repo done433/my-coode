@@ -1,0 +1,53 @@
+#to install
+brew install findutils
+
+
+
+mkdir -p ~/.local/bin
+
+
+nano ~/.local/bin/updatedb-home
+
+
+#!/usr/bin/env bash
+#מעדכן את מסד הנתונים של locate רק עבור /etc ו-/var/home
+
+UPDATEDB=/var/home/linuxbrew/.linuxbrew/bin/updatedb
+DB=/var/home/linuxbrew/.linuxbrew/var/locate/locatedb
+
+#תיקיות לסריקה
+SEARCH="/etc /var/home"
+
+#תיקיות לדילוג: תבניות regex של find, מופרדות ב-\|
+#.*/NAME מדלג על תיקייה בשם הזה בכל מקום
+#נתיב מלא מדלג רק על התיקייה הספציפית
+REGEX='.*/\.git'
+REGEX+='\|.*/node_modules'
+REGEX+='\|.*/__pycache__'
+REGEX+='\|.*/\.cache'
+REGEX+='\|.*/\.venv'
+REGEX+='\|.*/venv'
+REGEX+='\|.*/\.mypy_cache'
+REGEX+='\|.*/\.pytest_cache'
+REGEX+='\|/var/home/linuxbrew'
+REGEX+='\|/var/home/qwe/\.local/share/containers'
+REGEX+='\|/var/home/qwe/\.local/share/flatpak'
+REGEX+='\|/var/home/qwe/\.local/share/Trash'
+REGEX+='\|/var/home/qwe/\.var'
+
+#מערכות קבצים לדילוג
+FS="9P NFS nfs nfs4 afs autofs cifs smbfs proc sysfs tmpfs devtmpfs overlay squashfs fuse.sshfs fuse.portal fuse.gvfsd-fuse"
+
+sudo env SEARCHPATHS="$SEARCH" PRUNEREGEX="$REGEX" PRUNEFS="$FS" LOCATE_DB="$DB" "$UPDATEDB" \
+  && sudo chown "$USER:$USER" "$DB" \
+  && echo "מסד הנתונים עודכן" \
+  && ls -lh "$DB"
+
+
+
+
+
+chmod +x ~/.local/bin/updatedb-home
+
+#to update databse
+./.local/bin/updatedb-home

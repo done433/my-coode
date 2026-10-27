@@ -1,0 +1,379 @@
+
+
+#מתקין nginx
+sudo apt  install nginx -y
+
+#מפעיל ומגדיר לעלות אוטומטית
+sudo systemctl enable --now nginx
+
+#בודק שעובד
+sudo systemctl status nginx
+
+#פותח פורט 80 בפיירוול
+sudo firewall-cmd --add-service=http --permanent
+sudo firewall-cmd --reload
+
+
+
+
+
+
+#=== הרצת Nginx בתוך Docker/Podman ===
+#ריץ nginx בקונטיינר — פורט 80 על המכונה מועבר לקונטיינר
+podman run -d --name nginx -p 80:80 nginx
+
+
+podman run --rm -d --name nginx -p 80:80 nginx
+#בודק שהקונטיינר רץ
+podman ps
+
+#בודק לוגים
+podman logs nginx
+
+#עוצר ומוחק
+podman stop nginx && podman rm nginx
+
+
+
+
+
+#=== התקנת Docker על Rocky Linux 9 ===
+#מוסיף את ה-repo של Docker
+sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+
+#מתקין Docker
+sudo dnf install docker-ce docker-ce-cli containerd.io -y
+
+#מפעיל ומגדיר לעלות אוטומטית
+sudo systemctl enable --now docker
+
+#מוסיף את המשתמש שלך כדי לא לכתוב sudo כל פעם
+sudo usermod -aG docker $USER
+newgrp docker
+
+#בודק שעובד
+docker run -d --name nginx -p 80:80 nginx
+docker ps
+
+
+#=== תיקון הרשאות Docker ===
+#פשוט צא וחזור לטרמינל — זה יטען את הקבוצה מחדש
+exec su -l $USER
+
+
+
+#=== לראות איפה image ספציפי יושב ===
+docker inspect nginx | grep -i path
+
+#=== כניסה לתוך הקונטיינר ===
+docker exec -it nginx bash
+
+#עכשיו אתה בתוך הקונטיינר ויכול לנווט בחופשיות
+ls /etc/nginx/
+ls /usr/share/nginx/html/
+
+
+
+#=== מיקום Nginx בתוך Docker ===
+#קובץ הגדרות ראשי
+/etc/nginx/nginx.conf
+
+#תיקיית האתרים
+/usr/share/nginx/html/
+
+#לוגים
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+
+
+
+
+
+
+/usr/share/nginx/html
+
+
+
+
+http://localhost/
+
+http://127.0.0.1:80
+
+
+nginx -s reload
+
+
+
+#to sea logs who  gen  in  webside
+sudo tail -f /var/log/nginx/access.log
+
+
+############################################
+#test nginx
+
+
+
+
+#=== siege — בדיקת עומסים על כמה דפים במקביל ===
+apt install siege -y
+
+#מריץ על רשימת URLs
+siege -c 50 -t 30S -f urls.txt
+
+
+
+
+
+#=== בדיקת עומסים על כמה דפים ===
+#כותב קובץ עם רשימת URLs
+cat > urls.txt << EOF
+http://localhost/
+http://localhost/data.json
+http://localhost/map.html
+http://localhost/uploads/
+EOF
+
+#מריץ את הבדיקה על כל URL בתורו
+while read url; do
+    echo "=== בודק $url ==="
+    ab -n 1000 -c 50 "$url"
+done < urls.txt
+
+
+
+
+#== התקנה ושימוש ב-ab (Apache Benchmark) ===
+#מתקין
+apt install apache2-utils -y
+
+#שולח 10,000 בקשות עם 100 במקביל
+ab -n 10000 -c 100 http://localhost/
+
+#מה המספרים אומרים:
+#-n = סה"כ בקשות
+#-c = כמה במקביל בו זמנית
+
+ab -n 1000 -c 10 http://localhost/
+
+
+#=== התקנה ושימוש ב-wrk ===
+apt install wrk -y
+
+#שולח עומס מקסימלי — 12 threads, 400 חיבורים, 30 שניות
+wrk -t12 -c400 -d30s http://localhost/
+
+
+
+siege -c10 -r100 http://localhost/
+
+
+
+siege -c100 -r1000 http://localhost/
+
+
+siege -c200 -r5000 http://localhost/
+
+siege -c1000 -r10000 http://localhost/
+
+
+
+#=== הפעלת nginx status page ===
+#פותח את קובץ ההגדרות
+nano /etc/nginx/conf.d/default.conf
+
+#מוסיף את זה בתוך server {}
+location /nginx_status {
+    stub_status on;
+    allow 127.0.0.1;
+    deny all;
+}
+
+
+
+#שומר ומריץ reload
+nginx -s reload
+
+#רואה את הסטטיסטיקות
+curl http://localhost/nginx_status
+
+
+
+
+
+
+/etc/nginx/nginx.conf
+
+
+worker_rlimit_nofile 65535;
+
+
+worker_processes  auto;
+worker_connections  10240;
+
+
+
+
+
+nginx -s reload
+
+#=== התקנה ושימוש ב-gobuster ===
+apt install gobuster -y
+
+#סורק את האתר עם רשימת מילים נפוצה
+gobuster dir -u http://localhost -w /usr/share/wordlists/dirb/common.txt
+
+
+#=== סריקת מבנה אתר ===
+apt install wget -y
+
+#מוריד את כל האתר ומראה את כל הקישורים
+wget --spider -r -nd --delete-after http://localhost 2>&1 | grep "^--"
+
+
+
+
+ dirb http://192.168.1.224/ /usr/share/wordlists/dirb/common.txt
+
+
+
+
+sudo apt-get install crunch
+
+crunch 1 3 123
+
+
+crunch 7 7 -t @^%,CAT -c 6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################
+#lerning html ...
+
+
+#=== משאבים לבניית אתר מידע ===
+
+#ללמוד HTML/CSS בסיסי
+https://www.w3schools.com
+
+#תבניות מוכנות — מעתיק ומדביק
+https://getbootstrap.com
+
+#עיצובים מוכנים להורדה בחינם
+https://html5up.net
+
+#דוגמאות dashboard
+https://grafana.com/grafana/dashboards
+
+#מפות לנתוני WiFi
+https://leafletjs.com
+
+ === איך מתחילים ===
+ 1. נכנס ל-html5up.net
+ 2. מוריד תבנית שאוהב
+ 3. שם את הקבצים ב /usr/share/nginx/html/
+ 4. פותח בדפדפן ורואה תוצאה מיידית
+ 5. עורך את הטקסט לפי הפרויקט שלך
+
+
+#=== תבניות אתרים מוכנות ===
+
+#HTML5UP — תבניות יפות בחינם
+https://html5up.net
+
+#Bootstrapmade — תבניות מקצועיות
+https://bootstrapmade.com
+
+#FreeHTML5 — תבניות חינמיות
+https://freehtml5.co
+
+
+
+#=== הרצת Grafana עם Docker ===
+docker run -d --name grafana \
+  --restart always \
+  -p 3000:3000 \
+  grafana/grafana
+
+
+http://localhost:3000
+
+
+#=== תבניות אתרים מוכנות ===
+
+#HTML5UP — תבניות יפות בחינם
+https://html5up.net
+
+#Bootstrapmade — תבניות מקצועיות
+https://bootstrapmade.com
+
+#FreeHTML5 — תבניות חינמיות
+https://freehtml5.co
+
+
+
+https://adminlte.io/themes/v3/
+
+
+#=== הורדת תבנית מגיטהאב ===
+git clone https://github.com/ColorlibHQ/AdminLTE
+cd AdminLTE
+#שים בתיקיית nginx
+cp -r * /usr/share/nginx/html/
+
+
+
+#=== חיפוש תבניות בגיטהאב ===
+https://github.com/topics/html-template
+https://github.com/topics/bootstrap-template
+https://github.com/topics/dashboard-template
+
+
+docker run -d --name crowdsec \
+  -p 8080:8080 \
+  crowdsecurity/crowdsec
+
+
+
+#=== כלים דומים ===
+
+#מפת תקיפות בזמן אמת
+https://github.com/nicholaswilde/fail2ban-map
+
+#מפת IP גיאוגרפית
+https://github.com/pawelmalak/flame
+
+#dashboard אבטחה עם מפות
+https://github.com/geerlingguy/internet-pi
+
+#CrowdSec — כמו fail2ban עם מפה מובנית
+https://github.com/crowdsecurity/crowdsec
+
+
+
+docker run -d --name traccar \
+  --restart always \
+  -p 8082:8082 \
+  traccar/traccar
+
+
+#=== כלים לmפות + DB ===
+
+#Traccar — מעקב GPS עם מפה ומסד נתונים
+https://github.com/traccar/traccar
+
+#Overpass Turbo — שאילתות על מפות OSM
+https://github.com/drolbr/Overpass-API
+
+#PostGIS — מסד נתונים עם תמיכה במיקום
+https://github.com/postgis/postgis

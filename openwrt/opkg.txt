@@ -1,0 +1,10 @@
+
+
+opkg update
+
+
+#upgrade tool
+
+opkg install auc
+auc
+

@@ -1,0 +1,4 @@
+sudo apt install opensnitch python3-opensnitch-ui -y
+
+
+sudo systemctl enable opensnitch.service

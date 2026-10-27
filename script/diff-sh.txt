@@ -1,0 +1,78 @@
+nano sort_notes.py
+
+
+
+
+#!/usr/bin/env python3
+import sys
+
+def read_blocks(text):
+    blocks = []
+    current = []
+
+    for line in text.splitlines(True):
+        if line.startswith("# ") and current:
+            blocks.append("".join(current))
+            current = [line]
+        else:
+            current.append(line)
+
+    if current:
+        blocks.append("".join(current))
+
+    return blocks
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: sort_notes.py file.md")
+        sys.exit(1)
+
+    with open(sys.argv[1], "r", encoding="utf-8") as f:
+        text = f.read()
+
+    blocks = read_blocks(text)
+
+    # key = first line (# title)
+    blocks.sort(key=lambda b: b.splitlines()[0].strip())
+
+    sys.stdout.write("".join(blocks))
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+#to use
+
+chmod +x sort_notes.py
+
+
+
+./sort_notes.py tool1-try.txt.md > sorted_notes.txt
+
+
+
+
+#to chek uqual 
+
+python3 sort_notes.py tool1-try.txt.md | sha256sum
+python3 sort_notes.py sorted_notes.txt | sha256sum
+
+
+#or chek  
+
+sort sorted_notes.txt  | sha256sum 
+
+sort tool1-try.txt.md | sha256sum 
+
+
+

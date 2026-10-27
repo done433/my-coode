@@ -1,0 +1,100 @@
+
+# לבדוק גודל קבצים בתיקיות ראשיות במערכת
+sudo du -xh --max-depth=1 --exclude=/proc --exclude=/sys --exclude=/run /
+
+
+du -h --max-depth=1 ~/
+
+
+#find
+
+#ניקוי קבצים זמניים ישנים מ-7 ימים (בטוח יותר)
+sudo find /tmp -type f -mtime +7 -exec rm -f {} \;
+sudo find /tmp -type d -empty -delete
+
+ 
+ #הופך את כל התיקיות לנגישות ותקינות
+ 
+find . -type d -exec chmod 755 {} +
+
+#פך את כל הקבצים הרגילים לבטוחים (לא ניתנים להרצה בטעות)
+
+find . -type f -exec chmod 644 {} +
+
+#צעד החכם: מוצא רק את קבצי הקוד שאמורים לרוץ ומחזיר להם הרשאת הרצה
+
+find . -type f \( -name "*.sh" -o -name "*.py" -o -name "*.pl" \) -exec chmod +x {} +
+
+
+
+#=== הוספת סיומת .txt לכל הקבצים כולל תת תיקיות ===
+find /path/to/folder -type f ! -name "*.*" -exec mv {} {}.txt \;
+
+
+#=== הוספת .txt לכל קובץ ללא יוצא מן הכלל ===
+find /usr/share/nginx/html/navi-master -type f -exec mv {} {}.txt \;
+
+
+##############################################
+#locate
+
+
+#=== התקנה ושימוש ב-locate ===
+#מתקין
+apt install locate -y
+
+#מעדכן את מסד הנתונים — חובה בפעם הראשונה
+updatedb
+
+#מחפש קובץ לפי שם
+locate filename
+
+#דוגמא — מחפש את כל קבצי nginx
+locate nginx.conf
+
+
+
+#חיפוש רק בקבצים קיימים במערכת (no kernel ...)
+locate --existing <filename>
+
+
+
+#הצגת מידע על מסד הנתונים
+locate -S
+
+#חיפוש עם ביטוי רגולרי מלא (למשל, חיפוש קובץ עם סיומת .txt בלבד)
+locate --regex <pattern>
+
+
+
+
+##############################################
+
+#open files
+
+sudo apt update
+sudo apt install psmisc
+
+
+fuser -v /path/to/file      # הצגת כל התהליכים המשתמשים בקובץ או ספריה מסוימת
+
+
+fuser -r /path/to/file   # תהליכים שעושים קריאה על הקובץ
+fuser -w /path/to/file   # תהליכים שעושים כתיבה על הקובץ
+fuser -c /path/to/file   # תהליכים שעושים גישה לקובץ (לא משנה אם קריאה או כתיבה)
+
+
+fuser -n tcp 80         # תהליכים שמשתמשים ב-PORT 80 (HTTP)
+fuser -n udp 53         # תהליכים שמשתמשים ב-PORT 53 (DNS)
+
+
+
+
+fuser /path/to/file      # רק הצגת ה-PIDs של התהליכים שמשתמשים בקובץ
+
+fuser -m /path/to/directory  # הצגת תהליכים שמשתמשים בקובץ/ספריה או כל קובץ/ספריה בתוך תיקייה
+
+
+
+fuser -l    # הצגת רשימה של כל הקבצים והפורטס המנוהלים על ידי fuser
+

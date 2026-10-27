@@ -1,0 +1,10 @@
+apt update
+apt install -y network-manager
+systemctl enable NetworkManager
+systemctl start NetworkManager
+
+
+
+nmcli dev wifi list           # ראה רשתות זמינות
+nmcli dev wifi connect "SSID שלך" password "סיסמה שלך"
+

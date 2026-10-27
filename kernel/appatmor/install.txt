@@ -1,0 +1,33 @@
+
+ sudo apt install apparmor apparmor-profiles apparmor-utils apparmor-profiles-extra mariadb-common apparmor-profiles  
+ apparmor  apparmor-notify  apparmor-profiles   apparmor-profiles-extra  
+ apparmor-utils  python3-apparmor   python3-libapparmor -y 
+ 
+ sudo apparmor_parser -r /etc/apparmor.d/*
+ sudo aa-enforce /etc/apparmor.d/*
+ 
+ sudo sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash apparmor=1 security=apparmor"/' /etc/default/grub
+ sudo update-grub
+ sudo systemctl enable apparmor
+ sudo reboot
+ 
+ sudo systemctl reload apparmor
+ 
+ 
+ 
+ 
+ 
+ 
+ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
+ 
+ sudo find /etc/apparmor.d/ -type f -exec aa-enforce {} \; 2>/dev/null
+
+
+for p in /etc/apparmor.d/*; do
+    sudo aa-complain "$p"  
+done
+
+
+
+sudo aa-enforce /etc/apparmor.d/*
+

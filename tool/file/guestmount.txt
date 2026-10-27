@@ -1,0 +1,16 @@
+#Mount and access VM disk images without booting them.
+
+sudo apt install libguestfs-tools
+
+mkdir ~/<directory>
+
+#connect
+guestmount -a ~/<file.img> -i --ro ~/<directory>
+
+ls -lah ~/<directory>
+
+#disconect
+guestunmount ~/<directory>
+
+#and to chek to disconect
+mountpoint ~/<directory>

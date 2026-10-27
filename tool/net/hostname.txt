@@ -1,0 +1,24 @@
+#הצגת שם המחשב הנוכחי
+cat /etc/hostname
+
+hostname
+
+hostnamectl
+
+hostnamectl status
+
+#to ching troo
+sudo hostnamectl set-hostname <new name>
+
+sudo hostnamectl hostname  new_hostname
+
+
+#שינוי זמני (עד reboot)
+sudo hostname NEW_HOSTNAME
+
+#קבצים ש-systemd מעדכן אוטומטית
+cat /etc/hostname
+cat /etc/hosts
+
+
+

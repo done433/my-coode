@@ -1,0 +1,51 @@
+ 
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ 
+ 
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/qwe/.zshrc
+ 
+source ~/.zashrc
+
+ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> /home/ubuntu/.bashrc
+ source ~/.bashrc
+sudo apt-get install build-essential
+    
+    
+brew install gcc
+    
+
+
+
+
+
+
+~ ❯ brew list            
+==> Formulae
+acl		freetype  liblinear	libxaw       libxrender  nmap	     topgrade        zsh
+berkeley-db@5	fzf	 libmpc	libxcb       libxt	openssl@3    unzip	     zsh-history-substring-search
+binutils	gcc	 libpcap	libxdmcp     lua	pcre2        xorgproto       zstd
+bzip2		gettext   libpng	libxext      lz4	python@3.14  xsv
+ca-certificates  gmp	 libsm	libxft       mcfly	readline     xterm
+cheat		isl	 libssh2	libxinerama  mpdecimal   rustscan     xz
+dbus		libedit   libunistring  libxml2      mpfr	sqlite       z
+expat		libffi    libx11	libxmu       navi	starship     zlib
+fontconfig	libice    libxau	libxpm       ncurses	thefuck      zlib-ng-compat
+
+
+
+
+
+
+
+
+
+
+
+#######
+#service
+
+brew services list
+
+#files
+ls -la ~/.config/systemd/user/ 
+

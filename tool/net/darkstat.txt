@@ -1,0 +1,18 @@
+##https://github.com/emikulic/darkstat
+
+sudo apt install darkstat
+
+
+sudo nano  /etc/darkstat/init.cfg
+
+INTERFACE="-i <interfise>"
+
+sudo systemctl restart darkstat
+
+
+sudo darkstat
+
+#open in 
+0.0.0.0:667
+
+

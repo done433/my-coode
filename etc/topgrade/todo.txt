@@ -1,0 +1,21 @@
+
+sudo systemctl enable topgrade.timer
+sudo systemctl start topgrade.timer
+
+
+sudo systemctl enable topgrade.service
+sudo systemctl start topgrade.service
+
+
+
+
+
+echo "youruser ALL=(ALL) NOPASSWD: /home/linuxbrew/.linuxbrew/bin/topgrade" | sudo tee /etc/sudoers.d/topgrade
+
+
+
+
+
+journalctl -u topgrade.service
+
+

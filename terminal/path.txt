@@ -1,0 +1,28 @@
+#cleen PATH for now
+
+echo $PATH | tr ':' '\n' | awk '!seen[$0]++' | paste -sd: -
+
+echo "$PATH" | tr ':' '\n' | sed 's/^/| /' 
+
+echo $PATH | tr ':' '\n'
+
+#לראות סדר  במספרים 
+echo $PATH | tr ':' '\n' | nl
+
+#################################################################
+
+export PATH="/usr/bin:/bin:/usr/sbin:/usr/local/sbin:$PATH"
+
+
+
+###########
+
+#to see frome wich file path com
+
+grep -R "PATH=" /etc/profile /etc/profile.d ~/.profile /etc/zsh ~/.zshrc ~/.zsh_aliases
+
+
+
+#to clean path
+typeset -U PATH
+

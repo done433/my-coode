@@ -1,0 +1,12 @@
+#disabe
+/etc/init.d/uhttpd disable
+/etc/init.d/nginx disable
+
+#start
+/etc/init.d/uhttpd start
+/etc/init.d/nginx start
+
+
+#to check
+netstat -lntp | grep -E ':80|:443'
+

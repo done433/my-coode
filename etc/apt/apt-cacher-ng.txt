@@ -1,0 +1,3 @@
+sudo apt install apt-cacher-ng
+sudo systemctl enable apt-cacher-ng
+sudo systemctl start apt-cacher-ng

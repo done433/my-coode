@@ -1,0 +1,30 @@
+sudo apt install mosh 
+
+
+mosh --predict=always user@server
+
+mosh --predict=experimental user@server
+
+
+mosh --predict=always \
+     --predict-overwrite \
+     -o "ServerAliveInterval=5" \
+     user@server
+
+
+mosh --predict=always --predict-overwrite user@server
+
+mosh --disable-entropy user@server
+
+
+mosh --no-icmp user@server
+
+
+
+mosh --predict=always --predict-overwrite --ssh="ssh -o ServerAliveInterval=5 -o ServerAliveCountMax=3" --no-icmp 
+
+
+ mosh --predict=always --predict-overwrite root@<ip>
+
+#good
+mosh --predict=always --predict=adaptive  root@<ip>

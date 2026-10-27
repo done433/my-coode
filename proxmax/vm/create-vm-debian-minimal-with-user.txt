@@ -1,0 +1,73 @@
+#===Editable Parameters (change these only)===
+#VM id number
+VMID=6000
+#VM name
+VMNAME="debian13-TEM-CLEAN-NOCONNECT"
+#RAM in MB (1024 = 1GB, 2048 = 2GB)
+MEMORY=1024
+#Number of CPU cores
+CORES=1
+#Number of CPU sockets
+SOCKETS=1
+#Cloud-init username
+CIUSER="asd"
+#Cloud-init password
+CIPASS="asddsa"
+#Storage name
+STORAGE="local"
+#Path to the GENERIC image (nocloud does NOT work with cloud-init)
+IMAGE="/var/lib/vz/template/iso/debian-13-generic-amd64.qcow2"
+
+#===Verify Images Side By Side===
+#Confirm the generic file exists and has real content
+ls -lh /var/lib/vz/template/iso/debian-13-*.qcow2
+
+#===Download Generic Image If Missing Or Broken===
+#A real generic image is a few hundred MB. If missing, this fetches it.
+if [ ! -s "$IMAGE" ]; then
+  cd /var/lib/vz/template/iso/
+  rm -f debian-13-generic-amd64.qcow2
+  wget -O debian-13-generic-amd64.qcow2 https://cdimage.debian.org/cdimage/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+fi
+
+#===Confirm The Image Is Valid===
+#Shows format and virtual size of the generic image
+qemu-img info "$IMAGE"
+
+#===Destroy Old VM If It Exists===
+qm stop $VMID || true
+qm destroy $VMID --purge || true
+
+#===Create The VM===
+qm create $VMID --name $VMNAME --memory $MEMORY --cores $CORES --sockets $SOCKETS --net0 virtio,bridge=vmbr0
+
+#===Import The Generic Disk===
+qm importdisk $VMID "$IMAGE" $STORAGE --format qcow2
+
+#===Attach Disk===
+qm set $VMID --scsihw virtio-scsi-pci --scsi0 $STORAGE:$VMID/vm-$VMID-disk-0.qcow2
+
+#===Boot Order===
+qm set $VMID --boot order=scsi0
+
+#===Attach Cloud-Init Drive (mandatory, or nothing works)===
+qm set $VMID --ide2 $STORAGE:cloudinit
+
+#===Set User And Password===
+qm set $VMID --ciuser $CIUSER --cipassword "$CIPASS"
+
+#===Disable Auto Upgrade (needed for offline VM)===
+qm set $VMID --ciupgrade 0
+
+#===Serial Console===
+qm set $VMID --serial0 socket
+
+#===Show Final Config (must show ide2 cloudinit + scsi0)===
+qm config $VMID
+
+#===Start The VM===
+qm start $VMID
+
+#===After boot the prompt MUST read: debian13-TEM-CLEAN-NOCONNECT login: ===
+#Login:  asd / asddsa
+#Open console with:  qm terminal $VMID   (exit with Ctrl+O, press Enter if blank)

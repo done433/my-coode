@@ -1,0 +1,104 @@
+
+virsh list --all
+virsh destroy <vm-name>
+virsh undefine <vm-name> 
+
+rm -rf ~/.vagrant.d/boxes
+rm -rf ~/.vagrant.d/data
+rm -rf ~/.vagrant.d/tmp
+
+
+sudo rm -f /var/lib/libvirt/images/*.qcow2
+sudo rm -f /var/lib/libvirt/images/*.img
+
+virsh net-list
+
+
+#to see xml net from list  net-list
+virsh net-dumpxml <name net>
+
+virsh net-destroy <name>
+virsh net-undefine <name>
+
+
+
+
+
+virsh net-destroy net10
+virsh net-undefine net10
+virsh net-define net10.xml
+virsh net-start net10
+
+virsh net-dumpxml net10
+
+
+
+
+
+#############################
+
+#add interfis
+
+nano net10.xml
+
+
+
+
+<network>
+  <name>net10</name>
+  <bridge name='virbr10'/>
+  <forward mode='nat'/>
+
+  <ip address='10.10.10.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='10.10.10.100' end='10.10.10.200'/>
+    </dhcp>
+  </ip>
+</network>
+
+
+
+
+
+
+
+
+
+
+
+virsh net-define net10.xml
+virsh net-start net10
+virsh net-autostart net10
+
+
+
+
+
+
+
+
+
+
+
+virsh net-list --all
+ip a | grep virbr
+
+
+
+
+
+
+
+
+
+
+
+
+
+#in vm xml..
+
+
+
+<interface type='network'>
+  <source network='net10'/>
+</interface>

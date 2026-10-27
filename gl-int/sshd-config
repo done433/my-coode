@@ -1,0 +1,57 @@
+nano /etc/config/dropbear
+
+
+config dropbear
+	option PasswordAuth 'off'
+	option Port '22'
+
+config dropbear
+	option Port '22'
+	option PasswordAuth 'off'
+
+config dropbear
+	option PasswordAuth 'off'
+	option Port '1920'
+
+config dropbear
+	option PasswordAuth 'off'
+	option Port '1920'
+
+
+
+
+#put the my pub-key from ~/.ssh/id_rsa.pub
+nano /etc/dropbear/authorized_keys
+
+
+
+
+
+/etc/init.d/dropbear restart
+
+
+
+
+
+##########################################################################################
+
+#option 2
+
+
+opkg update
+opkg install openssh-server
+
+sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+mkdir /root/.ssh/
+cp /etc/dropbear/authorized_keys /root/.ssh/
+
+
+/etc/init.d/sshd enable
+/etc/init.d/sshd restart
+
+/etc/init.d/dropbear disable
+/etc/init.d/dropbear stop
+
+opkg update
+opkg install openssh-sftp-server

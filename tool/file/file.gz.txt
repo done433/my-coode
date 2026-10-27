@@ -1,0 +1,31 @@
+gunzip <name file>
+
+#to see and not open 
+zcat <file>
+
+
+unzip -c english.csv.gz > /path/to/output/english.csv
+
+gzip -d -c english.csv.gz > /path/to/output/english.csv
+
+
+zcat english.csv.gz
+
+
+zcat english.csv.gz > /path/to/output/english.csv
+
+
+7z x on-db.rar -o./extracted_files
+
+
+zless english.csv.gz
+
+
+tar -xzf files.tar.gz -C /path/to/output/
+
+
+7z x english.csv.gz -o/path/to/output/
+
+zcat english.csv.gz | grep something
+
+

@@ -1,0 +1,60 @@
+GRUB_CMDLINE_LINUX="userns=enabled"
+
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=5
+#GRUB_DISTRIBUTOR=`( . /etc/os-release && echo ${NAME} )`
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash lockdown=confidentiality slub_debug=P page_poison=1 vsyscall=none"
+GRUB_CMDLINE_LINUX="lockdown=confidentiality"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash  apparmor=1 security=apparmor vsyscall=none randomize_kstack_offset=on page_alloc.shuffle=1 "
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash lockdown=confidentiality"
+#for leptop save batary
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash  apparmor=1  mem_sleep_default=deep"
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash lockdown=confidentiality slub_debug=P page_poison=1 vsyscall=none ipv6.disable=1 apparmor=1 security=apparmor randomize_kstack_offset=on page_alloc.shuffle=1 pti=on spectre_v2=on spec_store_bypass_disable=on l1tf=full,force mds=full,nosmt tsx=off intel_iommu=on iommu=force audit=1 audit_backlog_limit=8192 panic=10"
+GRUB_CMDLINE_LINUX="userns=enabled lockdown=confidentiality apparmor=1 security=apparmor"
+
+
+GRC_ALIASES=true
+
+
+sudo update-grub
+
+
+
+
+sudo reboot
+
+
+###to see what relly in siting 
+
+cat /proc/cmdline
+
+
+#####lite  on  key
+sudo sed -i 's|^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ipv6.disable=1 i8042.nomux=1 i8042.reset"|' /etc/default/grub
+
+grep -RIn '^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub /etc/grub.d/
+
+sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ipv6.disable=1"|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ipv6.disable=1 i8042.nomux=1 i8042.reset"|g' /etc/grub.d/10_linux /etc/grub.d/20_linux_xen
+
+grep -RIn '^[[:space:]]*GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub /etc/grub.d/
+
+sudo nano /etc/kernel/cmdline
+
+root=/dev/mapper/lvmlmde-root ro cryptdevice=UUID=cce26145-12a3-4912-ac30-a666b68dad66:lvmlmde resume=/dev/mapper/lvmlmde-swap quiet splash ipv6.disable=1 i8042.nomux=1 i8042.reset
+
+sudo update-grub
+
+cat /proc/cmdline
+
+sudo update-initramfs -u -k all
+
+cat /etc/kernel/cmdline
+
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+sudo reboot
+
+
+dmesg | grep -iE "atkbd|keyboard|input|i8042"
+

@@ -1,0 +1,20 @@
+[Unit]
+Description=TP-Link Archer T4U Driver
+After=usb-devices.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe 8812au
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable tp-link-archer-t4u.service
+sudo systemctl start tp-link-archer-t4u.service

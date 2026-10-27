@@ -1,0 +1,150 @@
+sudo add-apt-repository ppa:linrunner/tlp
+sudo apt update
+sudo apt install tlp tlp-rdw
+
+
+sudo systemctl enable --now tlp-pd.service
+sudo systemctl enable --now tlp 
+
+sudo tlp start
+
+#to check if work
+sudo tlp stat
+#די לראות בדיוק אילו קבצים TLP טוען ואילו הגדרות פעילות כרגע
+tlp-stat -c
+
+
+sudo tlp-stat -b
+
+sudo tlp-stat -p
+
+
+tlp-stat -s
+
+
+sudo tlp setprofile battery
+
+ 
+############
+
+	
+systemctl status tlp
+systemctl status power-profiles-daemon
+systemctl status tuned
+systemctl status auto-cpufreq
+systemctl status thermald
+
+############
+
+#  ביצועים גבוהים #
+tlpctl performance
+
+# ביצועים מאוזנים #
+tlpctl balanced
+
+# הכי חוסך סוללה #  
+tlpctl power-saver
+
+
+
+################################################
+sudo nano /etc/tlp.conf	
+	
+
+	
+TLP_ENABLE=1
+TLP_DEFAULT_MODE=SAV
+WIFI_PWR_ON_AC=on
+WIFI_PWR_ON_BAT=on
+MAX_LOST_WORK_SECS_ON_BAT=15
+CPU_SCALING_GOVERNOR_ON_AC=powersave
+CPU_SCALING_GOVERNOR_ON_BAT=powersave
+CPU_ENERGY_PERF_POLICY_ON_AC=power
+CPU_ENERGY_PERF_POLICY_ON_BAT=power
+CPU_MIN_PERF_ON_AC=0
+CPU_MAX_PERF_ON_AC=50
+CPU_MIN_PERF_ON_BAT=0
+CPU_MAX_PERF_ON_BAT=30
+DISK_IDLE_SECS_ON_AC=2
+DISK_IDLE_SECS_ON_BAT=1
+DISK_APM_LEVEL_ON_AC="128 128"
+DISK_APM_LEVEL_ON_BAT="128 128"
+SATA_LINKPWR_ON_AC=min_power
+SATA_LINKPWR_ON_BAT=min_power
+	
+
+###############################################
+
+#logs 
+
+journalctl -u tlp -f
+
+
+journalctl | grep -i power
+
+
+
+
+
+#####################################################################
+
+sudo apt install linux-cpupower
+
+
+sudo cpupower frequency-set -g performance
+
+
+
+###################################################
+
+sudo apt install thermald
+
+
+sudo nano /etc/thermald/thermal-cpu-cdev-order.xml
+
+
+
+<!--
+Specifies the order of compensation to cool CPU only.
+There is a default already implemented in the code, but
+this file can be used to change order
+
+The Following cooling device can present
+-->
+
+<CoolingDeviceOrder>
+	<!-- Specify Cooling device order -->
+	<CoolingDevice>rapl_controller</CoolingDevice>
+	<CoolingDevice>intel_pstate</CoolingDevice>
+	<CoolingDevice>intel_powerclamp</CoolingDevice>
+	<CoolingDevice>cpufreq</CoolingDevice>
+	<CoolingDevice>Processor</CoolingDevice>
+</CoolingDeviceOrder>
+
+
+~/Music ✓❯ cat /etc/thermald/thermal-cpu-cdev-order.xml
+
+<!--
+Specifies the order of compensation to cool CPU only.
+There is a default already implemented in the code, but
+this file can be used to change order
+
+The Following cooling device can present
+-->
+
+<CoolingDeviceOrder>
+	<!-- Specify Cooling device order -->
+	<CoolingDevice>rapl_controller</CoolingDevice>
+	<CoolingDevice>intel_pstate</CoolingDevice>
+	<CoolingDevice>intel_powerclamp</CoolingDevice>
+	<CoolingDevice>cpufreq</CoolingDevice>
+	<CoolingDevice>Processor</CoolingDevice>
+</CoolingDeviceOrder>
+
+
+
+
+
+sudo systemctl enable thermald
+
+sudo systemctl restart thermald

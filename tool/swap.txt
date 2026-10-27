@@ -1,0 +1,62 @@
+# להפעיל מחדש את ה-cache ולפנות זיכרון
+sync  
+echo 3 > /proc/sys/vm/drop_caches
+
+
+
+
+#to see
+free -h
+
+#לראות מי משתמש בו בפועל
+sudo swapon --show
+
+#לראות תהליכים שמשתמשים ב־
+sudo smem -rs swap
+
+#open file
+lsof +L1
+
+#לבדוק עומק שימוש מערכת
+cat /proc/meminfo | grep -i swap
+
+#לראות אם בכלל יש לחץ זיכרון
+vmstat 1
+
+
+#מי משתמש בזיכרון באמת
+ps aux --sort=-%mem | head
+
+htop
+
+
+
+#לרוקן את ה־swap לגמרי (להחזיר ל־RAM
+sudo swapoff -a
+
+#להפעיל מחדש swap נקי
+sudo swapon -a
+
+
+
+
+
+
+
+sudo apt update && sudo apt install earlyoom
+
+sudo systemctl enable --now earlyoom
+
+ps aux --sort=-%mem | head -n 6
+#######
+
+
+#לבדוק קודם מה יש
+cat /etc/fstab | grep swap
+
+#למחוק שורה של swap.
+sudo nano /etc/fstab
+
+
+
+

@@ -1,0 +1,10 @@
+[Unit]
+Description=Topgrade system update
+
+[Service]
+ExecStart=/home/linuxbrew/.linuxbrew/bin/topgrade --yes --no-retry
+#ExecStart=/home/linuxbrew/.linuxbrew/bin/topgrade --yes --no-retry --disable git_repos
+User=qwe
+Environment="HOME=/home/qwe"
+
+

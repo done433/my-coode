@@ -1,0 +1,117 @@
+
+flatpak install flathub com.protonvpn.www
+
+flatpak run com.protonvpn.www
+
+flatpak permission-reset com.protonvpn.www
+
+
+flatpak uninstall com.protonvpn.www
+
+
+
+#ניקוי cache של ProtonVPN
+
+rm -rf ~/.var/app/com.protonvpn.www/cache/*
+rm -rf ~/.var/app/com.protonvpn.www/config/*
+
+
+
+#if you c'ant acsses  local  network  ssh
+sudo ip route add 192.168.8.0/24 dev wlp0s20f3
+
+#to chek after 
+ip route get <ip  to  wanna  conect ssh target>
+
+
+
+#######################################################################################
+curl -s https://repo.protonvpn.com/debian/public_key.asc | gpg --dearmor | sudo tee /usr/share/keyrings/protonvpn-stable-archive-keyring.gpg > /dev/null
+
+
+
+echo "deb [signed-by=/usr/share/keyrings/protonvpn-stable-archive-keyring.gpg] https://repo.protonvpn.com/debian stable main" | sudo tee /etc/apt/sources.list.d/protonvpn.list
+sudo apt update
+sudo apt install proton-vpn-gnome-desktop
+
+#command 
+protonvpn-app
+which protonvpn-app
+
+sudo systemctl status  me.proton.vpn.split_tunneling.service
+
+cat /usr/lib/systemd/system/me.proton.vpn.split_tunneling.service 
+
+#לבדוק את תהליך ה-Python
+
+ps -fp $(systemctl show -p MainPID --value me.proton.vpn.split_tunneling.service)
+
+
+#לראות אילו הרשאות
+cat /proc/$(systemctl show -p MainPID --value me.proton.vpn.split_tunneling.service)/status | grep Cap
+
+
+#logs
+journalctl -u me.proton.vpn.split_tunneling.service -b
+
+
+
+
+
+
+######################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################
+
+
+sudo nano /etc/NetworkManager/dispatcher.d/99-my-script.sh
+
+
+
+#!/bin/bash
+
+INTERFACE=$1
+EVENT=$2
+TARGET_USER="qwe"
+
+# שורת מעקב לדיבוג
+echo "$(date): Script triggered with interface $INTERFACE and event $EVENT" >> /tmp/dispatcher_debug.log
+
+if [ "$EVENT" = "up" ]; then
+    sleep 3
+    su - "$TARGET_USER" -c "export DISPLAY=:0 && flatpak run com.protonvpn.www" &
+fi
+
+
+
+
+
+
+
+sudo chmod +x /etc/NetworkManager/dispatcher.d/99-my-script.sh
+
+
+sudo /etc/NetworkManager/dispatcher.d/99-my-script.sh wlp0s20f3  up
+
+
+#to see log
+
+cat /tmp/dispatcher_debug.log

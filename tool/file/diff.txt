@@ -1,0 +1,99 @@
+
+
+sudo apt install meld
+
+meld <file>  <file>
+
+
+##########################################
+sudo apt install git-delta
+
+delta  <file>  <file>  
+
+
+###################################################
+
+sudo apt install kdiff3
+
+kdiff3   <file>    <file>
+
+####################################################
+sudo apt install diffoscope
+
+diffoscope  <file>   <file>
+
+###################################################
+
+
+#######################################################
+
+# בודק שהתוכן כלומר יש את אותם השורות בתוכן  בשני הקבצים  לא שהסדר זהה 
+
+diff <(sort file1.txt) <(sort file2.txt)
+
+[ "$(sort file1.txt | sha256sum)" = "$(sort file2.txt | sha256sum)" ] && echo OK || echo FAIL
+
+
+
+md5sum 
+ash256sum 
+
+diff -rq  <path>  <path>
+
+##################################################
+
+
+#סריקה ומחיקה של כפילויות
+
+
+
+sudo apt install fdupes
+
+fdupes -r -n 
+ 
+#סריקה ומחיקה של כפילויות
+fdupes -rd /path/to/scan
+
+
+###################################################
+
+#השוואת שני קבצים
+sudo apt install ssdeep
+
+#השוואת חתימות
+ssdeep -b file1.bin file2.bin
+
+ssdeep -m file1.bin file2.bin
+
+
+##################################################
+
+#השוואת שני קבצים
+sudo apt install sdhash
+
+#השוואת חתימות
+sdhash -c file1.sig file1.bin
+
+sdhash -s file1.sig file2.sig
+
+
+
+
+####################################################
+
+#השוואת שני קבצים
+sudo apt install tlsh-tools
+
+#חיפוש והשוואת קבצים דומים בתיקייה באופן רקורסיבי
+tlsh -xref -r </home/user/samples>
+
+#השוואה רקורסיבית עם התחשבות באורך הקבצים
+tlsh -xref -r </home/user/samples> -xlen
+
+
+
+
+
+##############################################
+
+

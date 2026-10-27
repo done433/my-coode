@@ -1,0 +1,29 @@
+
+
+sudo apt install -y fwupd fwupd-amd64-signed gnome-software-plugin-fwupd
+
+sudo apt install -y  plasma-discover discover-backend-fwupd  linux-firmware fwupd
+
+sudo apt install firmware-linux firmware-linux-nonfree firmware-misc-nonfree firmware-iwlwifi -y
+
+
+
+sudo apt update && sudo apt full-upgrade -y
+
+
+sudo apt update
+sudo apt install fwupd
+sudo systemctl enable --now fwupd
+
+sudo fwupdmgr refresh
+sudo fwupdmgr get-updates
+sudo fwupdmgr update
+
+sudo fwupdmgr enable-remote lvfs-testing
+sudo fwupdmgr refresh --force
+sudo fwupdmgr get-updates
+
+
+
+fwupdmgr get-devices
+sudo fwupdmgr get-remotes

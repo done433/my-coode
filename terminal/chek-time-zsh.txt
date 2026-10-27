@@ -1,0 +1,7 @@
+#input in zshrc or in terminal 
+zmodload zsh/zprof
+
+#and to chek time zsh take 
+zprof
+
+

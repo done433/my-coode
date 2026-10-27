@@ -1,0 +1,29 @@
+
+echo "deb [signed-by=/usr/share/keyrings/linuxmint-keyring.gpg] http://packages.linuxmint.com wilma main" | sudo tee /etc/apt/sources.list.d/mint.list
+
+
+
+curl -s "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6616109451BBBF2" | gpg --dearmor | sudo tee /usr/share/keyrings/linuxmint-keyring.gpg > /dev/null
+
+sudo apt update
+
+sudo apt install cinnamon-desktop-environment -y
+
+sudo apt install mint-themes mint-x-icons mint-y-icons -y
+
+sudo apt install mint-themes mint-backgrounds-vanessa mint-backgrounds-vera mint-backgrounds-victoria -y
+
+
+sudo update-alternatives --set x-session-manager /usr/bin/cinnamon-session
+
+sudo apt purge mate-desktop-environment-core mate-desktop mate-desktop-common libmate-desktop-2-17t64 -y
+
+sudo apt autoremove --purge -y
+sudo rm -f /usr/share/xsessions/mate.desktop
+
+
+
+sudo apt install gnome-packagekit -y
+echo "deb [signed-by=/usr/share/keyrings/linuxmint-keyring.gpg] http://packages.linuxmint.com wilma main upstream" | sudo tee /etc/apt/sources.list.d/mint.list
+
+

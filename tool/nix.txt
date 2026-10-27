@@ -1,0 +1,260 @@
+
+#install
+curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon
+
+sudo systemctl enable --now nix-daemon
+
+sudo systemctl status nix-daemon￼
+
+
+nix --version
+￼
+
+nix-shell -p nix-info --run "nix-info -m"
+￼
+
+nix-shell -p hello
+
+hello
+
+exit
+
+
+sudo sh -c 'echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf'
+￼
+
+sudo systemctl restart nix-daemon
+
+echo 'export PATH="$HOME/.local/state/nix/profiles/profile/bin:$PATH"' >> ~/.zshrc
+
+export PATH="$HOME/.local/state/nix/profiles/profile/bin:$PATH"
+
+￼
+
+#search tool
+nix search nixpkgs <name-tool>
+
+
+#הדרך הרגילה להתקנה קבועה 
+nix profile add nixpkgs#<name-tool>
+
+#מוריד את החבילה אם צריך ומריץ אותה, אבל היא לא מתקין 
+nix run nixpkgs#<name-tool>
+
+#to see  inst  tool installed
+nix profile list
+
+nix profile list | grep '^Name:' | awk '{print $2}'
+￼
+
+
+
+#########################################################################################
+
+nix develop github:heal-research/operon --no-write-lock-file
+
+nix build github:heal-research/operon --no-write-lock-file
+
+
+ls -la result
+
+
+nix flake show github:heal-research/operon
+
+nix profile remove operon
+￼
+nix profile add github:heal-research/operon#cli
+￼
+hash -r
+
+
+
+
+ls .nix-profile/bin
+
+
+
+
+operon_gp --help
+￼
+operon_enum --help
+￼
+operon_nsgp --help
+
+operon_parse_model --help
+￼
+
+
+
+
+nano data.csv
+
+x,y
+1,3
+2,5
+3,7
+4,9
+￼
+
+
+operon_gp \
+  --dataset data.csv \
+  --target y \
+  --inputs x \
+  --train 0:4
+
+
+
+operon_nsgp \                                                         
+  --dataset data.csv \
+  --target y \
+  --inputs x \
+  --train 0:4 \
+  --generations 4
+
+
+
+
+
+nix profile add nixpkgs#python3Packages.sympy
+￼
+
+
+
+operon_nsgp \
+  --dataset data.csv \
+  --target y \
+  --inputs x \
+  --train 0:4 \
+  --generations 4 \
+| tail -1 \
+| python3 -c 'import sys,sympy as s; x=s.symbols("x"); e=s.sympify(sys.stdin.read().strip()); print("y =", s.N(s.expand(e), 10))'
+
+
+
+
+operon_nsgp \
+  --dataset data-hard.csv \
+  --target y \
+  --inputs x \
+  --train 0:15 \
+  --generations 20 \
+| grep '^(' | tail -1 \
+| python3 -c 'import sys,sympy as s; x=s.symbols("x"); e=s.sympify(sys.stdin.read().strip()); print("y =", s.simplify(s.expand(e)))'
+
+
+
+
+###########################
+
+nano ~/operon-nice.py
+
+
+
+
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+import re
+import sympy as s
+
+cmd = ["operon_nsgp"] + sys.argv[1:]
+
+p = subprocess.Popen(
+    cmd,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    text=True
+)
+
+lines = []
+
+for line in p.stdout:
+    lines.append(line)
+
+p.wait()
+
+# בדיוק כמו grep '^(' | tail -1
+expressions = [
+    line.strip()
+    for line in lines
+    if line.strip().startswith("(") and line.strip().endswith(")")
+]
+
+if not expressions:
+    print("לא נמצאה נוסחה")
+    sys.exit(1)
+
+expr = expressions[-1]
+
+try:
+    x = s.symbols("x")
+    result = s.sympify(expr)
+    result = s.expand(result)
+    result = s.simplify(result)
+
+    print("y =", result)
+
+except Exception as e:
+    print("שגיאה בפענוח הנוסחה:")
+    print(expr)
+    print(e)
+
+
+
+
+chmod +x ~/operon-nice.py
+￼
+
+
+
+
+
+
+
+python3 - <<'PY'
+import math
+
+with open("data-very-hard.csv", "w") as f:
+    f.write("x,y\n")
+    for i in range(-50, 51):
+        x = i / 5
+        y = 0.5*x**3 - 2*x**2 + 3*math.sin(x) + 4*x + 7
+        f.write(f"{x},{y}\n")
+PY
+
+
+
+
+
+
+
+
+
+
+head data-very-hard.csv
+￼
+
+
+
+
+
+python3 ~/operon-nice.py \
+  --dataset data-very-hard.csv \
+  --target y \
+  --inputs x \
+  --train 0:101 \
+  --generations 200 \
+  --population-size 2000 \
+  --evaluations 400000
+
+
+
+
+
+
+
+
+
+
